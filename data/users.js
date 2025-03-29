@@ -1,10 +1,10 @@
 import express from "express";
 import { users } from "../config/mongoCollections.js";
 
-export const createUser = async (name, age, height, weight, bmi, location) => {
+export const createUser = async (name, email, password, age, height, weight, bmi, location) => {
     try {
         const userCollection = await users();
-        const user = await userCollection.insertOne({ name, age, height, weight, bmi, location });
+        const user = await userCollection.insertOne({ name, email, password, age, height, weight, bmi, location });
         return user;
     } catch (e) {
         console.log(e);
