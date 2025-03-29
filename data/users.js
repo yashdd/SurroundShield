@@ -22,6 +22,16 @@ export const getUser = async (id) => {
     }
 };
 
+export const getUserByEmail = async (email) => {
+    try {
+        const userCollection = await users();
+        const user = await userCollection.findOne({ email });
+        return user;
+    } catch (e) {
+        throw e;
+    }
+};
+
 export const updateUser = async (id, name, age, height, weight, bmi, location) => {
     try {
         const userCollection = await users();

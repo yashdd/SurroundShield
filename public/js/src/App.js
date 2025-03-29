@@ -1,17 +1,30 @@
 // src/App.js
 import React from 'react';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import RegistrationPage from './components/Registration.js'; // Import the Registration component
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './components/login';
+import Registration from './components/Registration';
+import './styles/styles.css';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <RegistrationPage /> {/* Render the Registration component */}
-      </header>
-    </div>
+    <Router>
+      <div className="app-container">
+        <Routes>
+          {/* Redirect root to login page */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          
+          {/* Login route */}
+          <Route path="/login" element={<Login />} />
+          
+          {/* Registration route */}
+          <Route path="/register" element={<Registration />} />
+          
+          {/* Catch all route - redirect to login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;

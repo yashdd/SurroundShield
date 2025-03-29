@@ -1,0 +1,125 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h2 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+}
+
+.subtitle {
+    color: #666;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+.form-group input.error {
+    border-color: #dc3545;
+}
+
+.error-text {
+    color: #dc3545;
+    font-size: 14px;
+}
+
+.login-button {
+    background-color: #4a90e2;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #357abd;
+}
+
+.login-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.login-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.login-footer p {
+    margin: 0 0 10px 0;
+    color: #666;
+}
+
+.login-footer a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+.forgot-password {
+    display: block;
+    margin-top: 10px;
+}
+
+.error-message {
+    background-color: #fff3f3;
+    color: #dc3545;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+} 
