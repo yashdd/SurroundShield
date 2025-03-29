@@ -9,10 +9,8 @@ router.route("/").post(async (req, res) => {
         const { name, email, password, age, height, weight, bmi, location } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await createUser(name, email, hashedPassword, age, height, weight, bmi, location);
-        const { name, email, password, age, height, weight, bmi, location } = req.body;
         // console.log(req.body);
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await createUser(name, email, hashedPassword, age, height, weight, bmi, location);
+
         return res.status(201).json(user);
     } catch (e) {
         console.log(e);
