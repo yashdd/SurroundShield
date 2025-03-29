@@ -1,0 +1,30 @@
+{
+  "name": "surroundshield",
+  "version": "1.0.0",
+  "description": "SurroundShield is an AI-powered app that provides real-time, personalized risk alerts based on location and health data, helping users stay safe from weather changes, pollution, and natural disasters.",
+  "homepage": "https://github.com/yashdd/SurroundShield#readme",
+  "bugs": {
+    "url": "https://github.com/yashdd/SurroundShield/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yashdd/SurroundShield.git"
+  },
+  "license": "ISC",
+  "author": "SurroundShield",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon --env-file .env --signal SIGTERM app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.8.4",
+    "dotenv": "^16.4.7",
+    "env": "^0.0.2",
+    "express": "^4.18.2",
+    "mongo": "^0.1.0",
+    "mongodb": "^6.15.0",
+    "nodemon": "^3.1.7"
+  }
+}
