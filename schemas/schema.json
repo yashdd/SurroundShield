@@ -1,0 +1,10 @@
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "password": "password123",
+    "age": 29,
+    "height": 180,  
+    "weight": 75,   
+    "bmi": 23.1,
+    "location": "New York, USA"
+  }
