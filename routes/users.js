@@ -112,16 +112,19 @@ router.post("/login", async (req, res) => {    try {
         return res.status(401).json({ error: "Invalid credentials" });
       }
   
-      // Create session
-      req.session.user = {
-        id: user._id,
-        email: user.email,
-        name: user.name
-      };
+      
 
       const pythonApiUrl = 'http://127.0.0.1:7000/risk_assessment';
       const response = await axios.post(pythonApiUrl, user);
       console.log(response.data);
+
+      // Create session
+      req.session.user = {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        riskData: response.data
+      };
 
     console.log(user);
   
@@ -131,7 +134,7 @@ router.post("/login", async (req, res) => {    try {
           id: user._id,
           name: user.name,
           email: user.email,
-        //   riskData: response.data
+          riskData: response.data
         }
       });
   
@@ -178,14 +181,15 @@ router.post("/logout", (req, res) => {
     res.json({ message: "Logged out" });
 });
 
-router.route("/refreshData/:id").get(async (req, res) => {
+router.route("/refreshData").get(async (req, res) => {
     try {
-        const user = await getUser(req.params.id);
+        const user = req.session.user._id;
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
           }
           const pythonApiUrl = 'http://127.0.0.1:7000/risk_assessment';
           const response = await axios.post(pythonApiUrl, user);
+          req.session.user.riskData = response.data;
           return res.status(200).json({ 
             message: "Login successful",
             user: {
@@ -201,12 +205,13 @@ router.route("/refreshData/:id").get(async (req, res) => {
     }
 });
 
-router.route("/followup/:id").get(async (req, res) => {
+router.route("/followup").get(async (req, res) => {
     try {
-        const user = await getUser(req.params.id);
+        const user = req.session.user._id;
         const { query } = req.body;
+        const riskData = req.session.user.riskData;
         const pythonApiUrl = 'http://127.0.0.1:7000/followup_query';
-        const response = await axios.post(pythonApiUrl, { user, query });
+        const response = await axios.post(pythonApiUrl, { query });
         return res.status(200).json(response.data);
     } catch (e) {
         console.error('Error sending user data:', e);
@@ -214,35 +219,7 @@ router.route("/followup/:id").get(async (req, res) => {
     }
 });
 
-router.route("/sendUserData/:id").get(async (req, res) => {
-    try {
-        const user = await getUser(req.params.id);
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-          }
-          const pythonApiUrl = 'http://127.0.0.1:5000/predict';
-          const response = await axios.post(pythonApiUrl, user);
-          return res.status(200).json(response.data);
-    } catch (e) {
-        console.error('Error sending user data:', e);
-        return res.status(500).json({ error: e });
-    }
-});
 
-router.route("/sendUserData/:id").get(async (req, res) => {
-    try {
-        const user = await getUser(req.params.id);
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-          }
-          const pythonApiUrl = 'http://127.0.0.1:5000/predict';
-          const response = await axios.post(pythonApiUrl, user);
-          return res.status(200).json(response.data);
-    } catch (e) {
-        console.error('Error sending user data:', e);
-        return res.status(500).json({ error: e });
-    }
-});
 
 export { router as userRoutes };
 
