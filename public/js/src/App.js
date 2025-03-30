@@ -1,11 +1,11 @@
 // src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/Login.js';
+import Login from './components/login.js';
 import Registration from './components/Registration.js';
 import './styles/styles.css';
 import Dashboard from './components/Dashboard.js';
-
+import ChatInterface from './components/chat_interface.js';
 const App = () => {
 
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
@@ -28,6 +28,7 @@ const App = () => {
           
           {/* Catch all route - redirect to login */}
           {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
+          <Route path="/chat" element={<ChatInterface />} />
         </Routes>
       </div>
     </Router>
