@@ -7,7 +7,7 @@ import { userRoutes } from "./routes/users.js"; // Import user routes
 
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.use(session({
     secret: 'abcd123', // Change this!
