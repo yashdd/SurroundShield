@@ -1,5 +1,6 @@
 import express from "express";
 import { users } from "../config/mongoCollections.js";
+import { ObjectId } from "mongodb";
 
 export const createUser = async (name, email, password, age, height, weight, bmi, location) => {
     try {
@@ -15,7 +16,7 @@ export const createUser = async (name, email, password, age, height, weight, bmi
 export const getUser = async (id) => {
     try {
         const userCollection = await users();
-        const user = await userCollection.findOne({ _id: id });
+        const user = await userCollection.findOne({ _id: new ObjectId(id) });
         return user;
     } catch (e) {
         throw e;
@@ -35,7 +36,7 @@ export const getUserByEmail = async (email) => {
 export const updateUser = async (id, name, age, height, weight, bmi, location) => {
     try {
         const userCollection = await users();
-        const user = await userCollection.updateOne({ _id: id }, { $set: { name, age, height, weight, bmi, location } });
+        const user = await userCollection.updateOne({ _id: new ObjectId(id) }, { $set: { name, age, height, weight, bmi, location } });
         return user;
     } catch (e) {
         throw e;
@@ -45,7 +46,7 @@ export const updateUser = async (id, name, age, height, weight, bmi, location) =
 export const deleteUser = async (id) => {
     try {
         const userCollection = await users();
-        const user = await userCollection.deleteOne({ _id: id });
+        const user = await userCollection.deleteOne({ _id: new ObjectId(id) });
         return user;
     } catch (e) {
         throw e;
