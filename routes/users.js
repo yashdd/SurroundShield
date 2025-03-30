@@ -1,9 +1,13 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import { createUser, getUser, updateUser, deleteUser, getUserByEmail } from "../data/users.js";
-import jwt from "jsonwebtoken";
+import { users } from "../config/mongoCollections.js";
 
 const router = express.Router();
+
+
 
 router.route("/").post(async (req, res) => {
     try {
@@ -43,45 +47,89 @@ router.route("/:id").get(async (req, res) => {
     }
 });
 
-router.route("/login").post(async (req, res) => {
+// router.route("/login").post(async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+//         const user = await getUserByEmail(email);
+        
+//         if (!user) {
+//             return res.status(401).json({ error: "Invalid email or password" });
+//         }
+        
+//         const isPasswordValid = await bcrypt.compare(password, user.password);
+//         if (!isPasswordValid) {
+//             return res.status(401).json({ error: "Invalid email or password" });
+//         }
+
+//         // Generate JWT token
+//         const token = jwt.sign(
+//             { userId: user._id, email: user.email },
+//             process.env.JWT_SECRET || 'your-secret-key',
+//             { expiresIn: '24h' }
+//         );
+
+//         // Return user data and token
+//         return res.status(200).json({
+//             token,
+//             user: {
+//                 id: user._id,
+//                 name: user.name,
+//                 email: user.email,
+//                 age: user.age,
+//                 height: user.height,
+//                 weight: user.weight,
+//                 bmi: user.bmi,
+//                 location: user.location
+//             }
+//         });
+//     } catch (e) {
+//         console.error('Login error:', e);
+//         return res.status(500).json({ error: "An error occurred during login" });
+//     }
+// });
+
+router.post("/login", async (req, res) => {
     try {
+        console.log("Login request received:", req.body);
+        const userCollection = await users();
         const { email, password } = req.body;
-        const user = await getUserByEmail(email);
-        
-        if (!user) {
-            return res.status(401).json({ error: "Invalid email or password" });
-        }
-        
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: "Invalid email or password" });
-        }
 
-        // Generate JWT token
-        const token = jwt.sign(
-            { userId: user._id, email: user.email },
-            process.env.JWT_SECRET || 'your-secret-key',
-            { expiresIn: '24h' }
-        );
+        // 1. Find user
+        const user = await userCollection.findOne({ email });
+        if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
-        // Return user data and token
-        return res.status(200).json({
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                age: user.age,
-                height: user.height,
-                weight: user.weight,
-                bmi: user.bmi,
-                location: user.location
-            }
-        });
-    } catch (e) {
-        console.error('Login error:', e);
-        return res.status(500).json({ error: "An error occurred during login" });
+        // 2. Check password
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) return res.status(401).json({ error: "Invalid credentials" });
+
+        // 3. Set session
+        req.session.user = {
+            id: user._id,
+            email: user.email,
+            name: user.name,
+        };
+
+        // 4. Respond without password
+        res.json({ user: { id: user._id, email: user.email, name: user.name } });
+
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ error: "Login failed" });
     }
 });
 
+// Check Authentication
+router.get("/check-auth", (req, res) => {
+    if (req.session.user) {
+        res.json({ loggedIn: true, user: req.session.user });
+    } else {
+        res.json({ loggedIn: false });
+    }
+});
+
+// Logout
+router.post("/logout", (req, res) => {
+    req.session.destroy();
+    res.json({ message: "Logged out" });
+});
 export { router as userRoutes };

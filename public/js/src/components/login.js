@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './login.css';
+import { AlertCircle, Loader2 as Spinner } from 'lucide-react';
+import '../styles/styles.css'; 
+
+// Session timeout duration (30 minutes)
+const SESSION_TIMEOUT = 30 * 60 * 1000;
 
 const Login = () => {
     const navigate = useNavigate();
@@ -12,19 +16,45 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState('');
 
+    // Check for existing session on component mount
+    // useEffect(() => {
+    //     const sessionData = sessionStorage.getItem('authSession');
+    //     if (sessionData) {
+    //         const { expiresAt } = JSON.parse(sessionData);
+    //         if (Date.now() < expiresAt) {
+    //             navigate('/dashboard');
+    //         } else {
+    //             sessionStorage.removeItem('authSession');
+    //         }
+    //     }
+    // }, [navigate]);
+    useEffect(() => {
+        const sessionData = sessionStorage.getItem('authSession');
+        const currentPath = window.location.pathname;
+    
+        if (sessionData && currentPath !== '/dashboard') {
+            const { expiresAt } = JSON.parse(sessionData);
+            if (Date.now() < expiresAt) {
+                navigate('/dashboard');
+            } else {
+                sessionStorage.removeItem('authSession');
+            }
+        }
+    }, []); // Empty depend// Empty array ensures it runs only once, on moun
+
     const validateForm = () => {
         const newErrors = {};
-        
-        if (!formData.email) {
+
+        if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email address';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            newErrors.email = 'Invalid email format';
         }
 
-        if (!formData.password) {
+        if (!formData.password.trim()) {
             newErrors.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters long';
+        } else if (formData.password.trim().length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
         }
 
         setErrors(newErrors);
@@ -33,37 +63,39 @@ const Login = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
+        setFormData(prev => ({
+            ...prev,
             [name]: value
         }));
-        // Clear error when user starts typing
         if (errors[name]) {
-            setErrors(prevState => ({
-                ...prevState,
-                [name]: ''
-            }));
+            setErrors(prev => ({ ...prev, [name]: '' }));
         }
+        if (serverError) setServerError('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setServerError('');
 
-        if (!validateForm()) {
-            return;
-        }
+        if (!validateForm()) return;
 
         setIsLoading(true);
 
         try {
-            const response = await fetch('/users/login', {
+            const response = await fetch('http://localhost:5000/api/users/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formData),
+                credentials: "include"
             });
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                throw new Error(`Expected JSON, got: ${text.substring(0, 100)}...`);
+            }
 
             const data = await response.json();
 
@@ -71,13 +103,25 @@ const Login = () => {
                 throw new Error(data.error || 'Login failed');
             }
 
-            // Store the token in localStorage or your preferred state management solution
-            localStorage.setItem('token', data.token);
-            
-            // Redirect to dashboard or home page
+            // Store session with expiration
+            const sessionData = {
+                token: data.token,
+                user: data.user,
+                expiresAt: Date.now() + SESSION_TIMEOUT
+            };
+            sessionStorage.setItem('authSession', JSON.stringify(sessionData));
+
+            // Set up session timeout
+            setTimeout(() => {
+                sessionStorage.removeItem('authSession');
+                navigate('/login?sessionExpired=true');
+            }, SESSION_TIMEOUT);
+
             navigate('/dashboard');
+
         } catch (error) {
-            setServerError(error.message || 'An error occurred during login');
+            console.error('Login error:', error);
+            setServerError(error.message || 'Login failed. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -87,28 +131,34 @@ const Login = () => {
         <div className="login-container">
             <div className="login-box">
                 <h2>Welcome Back</h2>
-                <p className="subtitle">Please sign in to your account</p>
+                <p className="subtitle">Please sign in to continue</p>
                 
                 {serverError && (
-                    <div className="error-message">
-                        {serverError}
+                    <div className="server-error">
+                        <AlertCircle size={16} />
+                        <span>{serverError}</span>
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="login-form">
+                <form onSubmit={handleSubmit} noValidate>
                     <div className="form-group">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">Email Address</label>
                         <input
                             type="email"
                             id="email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className={errors.email ? 'error' : ''}
-                            placeholder="Enter your email"
+                            className={errors.email ? 'input-error' : ''}
+                            placeholder="your@email.com"
+                            autoComplete="username"
+                            disabled={isLoading}
                         />
                         {errors.email && (
-                            <span className="error-text">{errors.email}</span>
+                            <span className="error-message">
+                                <AlertCircle size={14} />
+                                {errors.email}
+                            </span>
                         )}
                     </div>
 
@@ -120,28 +170,39 @@ const Login = () => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className={errors.password ? 'error' : ''}
-                            placeholder="Enter your password"
+                            className={errors.password ? 'input-error' : ''}
+                            placeholder="••••••••"
+                            autoComplete="current-password"
+                            disabled={isLoading}
                         />
                         {errors.password && (
-                            <span className="error-text">{errors.password}</span>
+                            <span className="error-message">
+                                <AlertCircle size={14} />
+                                {errors.password}
+                            </span>
                         )}
                     </div>
 
-                    <button 
-                        type="submit" 
-                        className="login-button"
+                    <button
+                        type="submit"
+                        className={`login-button ${isLoading ? 'loading' : ''}`}
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Signing in...' : 'Sign In'}
+                        {isLoading ? (
+                            <>
+                                <Spinner size={18} className="spinner" />
+                                Signing in...
+                            </>
+                        ) : 'Sign In'}
                     </button>
                 </form>
 
                 <div className="login-footer">
-                    <p>Don't have an account? <a href="/register">Sign up</a></p>
-                    <a href="/forgot-password" className="forgot-password">
-                        Forgot your password?
-                    </a>
+                    <div className="footer-links">
+                        <a href="/forgot-password">Forgot password?</a>
+                        <span>•</span>
+                        <a href="/register">Create account</a>
+                    </div>
                 </div>
             </div>
         </div>
