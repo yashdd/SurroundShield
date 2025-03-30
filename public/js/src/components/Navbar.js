@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, 
   LogIn, 
   UserPlus, 
-  LogOut, 
-  Menu,
-  ChevronRight,
+  LogOut,
   Shield
 } from 'lucide-react';
 import '../styles/navbar.css';
@@ -15,7 +13,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
-  const [isExpanded, setIsExpanded] = useState(true);
 
   const handleLogout = async () => {
     try {
@@ -36,23 +33,24 @@ const Navbar = () => {
     }
   };
 
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      navigate('/login');
+    } else {
+      navigate('/');
+    }
+  };
+
   const isActive = (path) => {
     return location.pathname === path;
   };
 
   return (
-    <nav className={`vertical-navbar ${isExpanded ? 'expanded' : 'collapsed'}`}>
-      <div className="nav-header">
-        <div className="logo-container">
-          <Shield className="logo-icon" size={24} />
-          {isExpanded && <span className="logo-text">Shield AI</span>}
-        </div>
-        <button 
-          className="toggle-btn"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          {isExpanded ? <ChevronRight size={20} /> : <Menu size={20} />}
-        </button>
+    <nav className="horizontal-navbar">
+      <div className="nav-brand">
+        <Shield className="logo-icon" />
+        <span className="logo-text">Shield AI</span>
       </div>
 
       <div className="nav-links">
@@ -60,9 +58,12 @@ const Navbar = () => {
           to="/" 
           className={`nav-link ${isActive('/') ? 'active' : ''}`}
           title="Home"
+          onClick={handleHomeClick}
         >
-          <Home size={20} />
-          {isExpanded && <span>Home</span>}
+          <div className="icon-container">
+            <Home />
+          </div>
+          <span>Home</span>
         </Link>
 
         {!isAuthenticated ? (
@@ -72,27 +73,33 @@ const Navbar = () => {
               className={`nav-link ${isActive('/login') ? 'active' : ''}`}
               title="Login"
             >
-              <LogIn size={20} />
-              {isExpanded && <span>Login</span>}
+              <div className="icon-container">
+                <LogIn />
+              </div>
+              <span>Login</span>
             </Link>
             <Link 
               to="/register" 
-              className={`nav-link ${isActive('/register') ? 'active' : ''}`}
+              className="register-btn"
               title="Register"
             >
-              <UserPlus size={20} />
-              {isExpanded && <span>Register</span>}
+              <div className="icon-container">
+                <UserPlus />
+              </div>
+              <span>Register</span>
             </Link>
           </>
         ) : (
-          <Link 
-            to="/logout" 
-            className="nav-link"
+          <button 
+            onClick={handleLogout}
+            className="nav-link logout-btn"
             title="Logout"
           >
-            <LogOut size={20} />
+            <div className="icon-container">
+              <LogOut />
+            </div>
             <span>Logout</span>
-          </Link>
+          </button>
         )}
       </div>
     </nav>

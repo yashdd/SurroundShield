@@ -1,321 +1,333 @@
 :root {
-  --navbar-bg: #111827;
-  --navbar-hover: rgba(255, 255, 255, 0.1);
-  --navbar-active: #2563eb;
-  --navbar-text: #f3f4f6;
-  --navbar-text-muted: #9ca3af;
-  --navbar-width-expanded: 280px;
-  --navbar-width-collapsed: 80px;
-  --navbar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --navbar-border: rgba(255, 255, 255, 0.1);
+  /* Updated color scheme */
+  --navbar-bg: #1a1f36;
+  --text-white: #ffffff;
+  --text-gray: #e2e8f0;
+  
+  /* Button colors */
+  --home-btn-bg: rgba(255, 255, 255, 0.08);
+  --home-btn-hover: rgba(255, 255, 255, 0.15);
+  --home-btn-active: rgba(255, 255, 255, 0.2);
+  --home-btn-bg: rgba(255, 255, 255, 0.1);
+  --home-btn-hover: rgba(255, 255, 255, 0.2);
+  --login-btn-bg: #4f46e5;
+  --login-btn-hover: #4338ca;
+  --register-btn-bg: rgba(255, 255, 255, 0.15);
+  --register-btn-hover: rgba(255, 255, 255, 0.25);
+  --logout-btn-bg: rgba(239, 68, 68, 0.1);
+  --logout-btn-hover-bg: rgba(239, 68, 68, 0.2);
+  --logout-btn-hover-color: #ef4444;
+  
+  /* Common styles */
+  --btn-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --btn-hover-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  --transition: 200ms ease-in-out;
+  --navbar-text-muted: #94a3b8;
+  --navbar-hover: rgba(255, 255, 255, 0.12);
+  --navbar-active: #3b82f6;
+  --navbar-border: rgba(255, 255, 255, 0.08);
+  --navbar-height: 72px;
+  --navbar-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --navbar-btn-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.vertical-navbar {
+.horizontal-navbar {
   position: fixed;
-  left: 0;
   top: 0;
-  height: 100vh;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
   background-color: var(--navbar-bg);
-  width: var(--navbar-width-expanded);
-  transition: all var(--navbar-transition);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Header Section */
-.nav-header {
-  height: 80px;
-  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 40px;
+  box-shadow: var(--navbar-shadow);
+  z-index: 1000;
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--navbar-border);
-  background-color: rgba(0, 0, 0, 0.2);
 }
 
-.logo-container {
+/* Brand section */
+.nav-brand {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex: 1;
+  gap: 12px;
 }
 
 .logo-icon {
   width: 32px;
   height: 32px;
-  color: var(--navbar-text);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  color: #ffffff;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  stroke-width: 2px;
 }
 
 .logo-text {
   font-size: 24px;
   font-weight: 700;
-  color: var(--navbar-text);
-  letter-spacing: 0.5px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-.toggle-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: var(--navbar-text-muted);
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.2s;
-}
-
-.toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--navbar-text);
-}
-
-/* Navigation Links */
+/* Right-side navigation container */
 .nav-links {
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-}
-
-.nav-link {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 12px 16px;
-  color: var(--navbar-text);
-  text-decoration: none;
-  transition: all 0.2s;
+  margin-left: auto;
+  padding-right: 24px;
+}
+
+/* Common button styles */
+.nav-link,
+.register-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 20px;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Home button */
+.nav-link[title="Home"] {
+  padding: 0 18px;
+  margin-right: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);  /* Increased default brightness */
+}
+
+/* Login button */
+.nav-link[title="Login"] {
+  padding: 0 22px;
+  margin-right: 4px;
+  background: #4f46e5;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+/* Register button */
+.register-btn {
+  padding: 0 22px;
+  margin-left: 4px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Icon styles */
+.nav-link svg,
+.register-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* Home button icon */
+.nav-link[title="Home"] svg {
+  color: #e2e8f0;
+  stroke-width: 2.2px;
+}
+
+.nav-link[title="Home"] span {
+  color: #e5e7eb;  /* Light gray, very visible */
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link[title="Home"]:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nav-link[title="Home"]:hover span {
+  color: #ffffff;  /* Pure white on hover */
+}
+
+/* Login button icon */
+.nav-link[title="Login"] svg {
+  color: #ffffff;
+  opacity: 0.95;
+  transition: all 0.2s ease;
+}
+
+.nav-link[title="Login"]:hover {
+  background: #6366f1;  /* Lighter blue on hover */
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Specific text color control */
+.nav-link[title="Home"] span {
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+/* Login button active state */
+.nav-link[title="Login"]:active {
+  background: #4338ca;  /* Darker blue when clicked */
+  transform: translateY(0);
+}
+
+/* Register button icon */
+.register-btn svg {
+  color: #ffffff;
+  stroke-width: 2.2px;
+}
+
+.register-btn:hover svg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+}
+
+/* Text styles */
+.nav-link span,
+.register-btn span {
+  padding: 0 2px;
   font-weight: 500;
   letter-spacing: 0.3px;
-  position: relative;
-  overflow: hidden;
 }
 
-.nav-link svg {
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-  transition: transform 0.2s;
-  color: var(--navbar-text);
-}
-
-.nav-link span {
-  font-size: 15px;
-  line-height: 22px;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--navbar-text);
-}
-
-.nav-link:hover {
-  color: white;
-  background-color: var(--navbar-hover);
-}
-
-.nav-link:hover svg {
-  transform: scale(1.1);
-  color: white;
-}
-
+/* Active state */
 .nav-link.active {
-  color: white;
-  background-color: var(--navbar-active);
+  background: var(--login-btn-hover);
+  color: var(--text-white);
   font-weight: 600;
 }
 
-.nav-link.active svg {
-  color: white;
-}
-
-.nav-link.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 24px;
-  background-color: #ffffff;
-  border-radius: 0 4px 4px 0;
-}
-
-/* Navigation Link Specific Styling */
-.nav-link[href="/"] {
-  margin-bottom: 4px;
-  color: white;
-}
-
-.nav-link[href="/"] svg {
-  color: white;
-}
-
-.nav-link[href="/login"] {
-  background-color: rgba(255, 255, 255, 0.08);
-  margin-bottom: 8px;
-  color: white;
-}
-
-.nav-link[href="/login"] svg {
-  color: white;
-}
-
-.nav-link[href="/login"]:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Register Button Special Styling */
-.nav-link[href="/register"] {
-  background-color: var(--navbar-active);
-  color: white;
-  margin: 4px 0 12px 0;
-  font-weight: 600;
-  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
-  text-align: center;
-}
-
-.nav-link[href="/register"]:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
-}
-
-.nav-link[href="/register"] svg {
-  color: white;
-}
-
-/* Logout Button Styling */
-.logout-btn {
-  background-color: rgba(255, 255, 255, 0.05);
-  border: none;
-  cursor: pointer;
-  margin-top: auto;
-  color: white;
-}
-
-.logout-btn svg {
-  color: white;
-}
-
-.logout-btn:hover {
-  background-color: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
-}
-
-.logout-btn:hover svg {
-  color: #ef4444;
-}
-
-/* Dividers */
-.nav-links::before,
-.nav-links::after {
-  content: '';
-  height: 1px;
-  background: var(--navbar-border);
-  margin: 8px 0;
-}
-
-/* Collapsed State */
-.vertical-navbar.collapsed {
-  width: var(--navbar-width-collapsed);
-}
-
-.collapsed .nav-link {
-  padding: 12px;
-  justify-content: center;
-}
-
-.collapsed .logo-text,
-.collapsed .nav-link span {
-  display: none;
-}
-
-.collapsed .nav-link[href="/register"] {
-  padding: 12px;
-}
-
-/* Tooltip for collapsed state */
-.collapsed .nav-link {
-  position: relative;
-}
-
-.collapsed .nav-link::after {
-  content: attr(title);
-  position: absolute;
-  left: calc(100% + 10px);
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #1f2937;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
-
-.collapsed .nav-link:hover::after {
+/* Hover effects */
+.nav-link:hover svg,
+.register-btn:hover svg {
   opacity: 1;
-  visibility: visible;
 }
 
-/* Container Adjustments */
-.app-container {
-  padding-left: var(--navbar-width-expanded);
-  transition: padding-left var(--navbar-transition);
-  min-height: 100vh;
-  background-color: #f9fafb;
-}
-
-.app-container.nav-collapsed {
-  padding-left: var(--navbar-width-collapsed);
-}
-
-@media (max-width: 1024px) {
-  .vertical-navbar {
-    transform: translateX(-100%);
-  }
-
-  .vertical-navbar.expanded {
-    transform: translateX(0);
-  }
-
-  .app-container {
-    padding-left: 0;
-  }
-}
-
+/* Mobile adjustments */
 @media (max-width: 768px) {
-  .nav-header {
-    height: 70px;
-    padding: 0 20px;
+  .nav-links {
+    gap: 12px;
+    padding-right: 16px;
+  }
+
+  .nav-link,
+  .register-btn {
+    padding: 0 16px;
+    height: 38px;
+    font-size: 14px;
+  }
+
+  .icon-container {
+    width: 20px;
+    height: 20px;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
   }
 
   .logo-text {
     font-size: 20px;
   }
-  
-  .nav-link {
-    padding: 10px 14px;
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .horizontal-navbar {
+    padding: 0 12px;
   }
   
-  .nav-link[href="/register"] {
-    margin: 4px 0 8px 0;
+  .nav-button {
+    height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
   }
+  
+  .nav-button svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .nav-links {
+    gap: 8px;
+  }
+  
+  .logo-text {
+    font-size: 18px;
+  }
+}
+
+/* Container adjustment for fixed navbar */
+.app-container {
+  padding-top: var(--navbar-height);
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* CSS Reset for buttons to ensure consistency */
+button.nav-button, 
+a.nav-button {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Add these rules to ensure the buttons look properly aligned in the navbar */
+.horizontal-navbar .nav-links .nav-link,
+.horizontal-navbar .nav-links .register-btn,
+.horizontal-navbar .nav-links .logout-btn {
+  margin: 0;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Improve text and icon visibility */
+.nav-button span, 
+.nav-button svg {
+  opacity: 1;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+}
+
+/* Make icons slightly larger for better visibility */
+.nav-button svg {
+  width: 22px;
+  height: 22px;
+  margin-right: 6px;
+  stroke-width: 2.2px; /* Slightly thicker icons */
+}
+
+/* Additional styling for button text */
+.nav-button span {
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+/* Icon container for better alignment */
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 2px;
+}
+
+/* Active state icon enhancement */
+.nav-link.active svg {
+  color: #ffffff;
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+  transform: scale(1.1);
 }
