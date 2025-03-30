@@ -1,5 +1,4 @@
 import requests
-
 def fetch_current_weather(api_key, location):
     base_url = "https://api.weatherbit.io/v2.0/current"
     params = {
@@ -55,7 +54,7 @@ def get_risk_assessment(prompt, databricks_api_url, databricks_token):
     }
     payload = {
         "messages": [
-            {"role": "system", "content": "You are a community risk awareness assistant gin=ving alerts and recommondations. Respond only on topics related to weather,weather alerts, environmental conditions, and crime safety in the community. If the query is not in this domain, say that you only handle community risk-related topics."},
+            {"role": "system", "content": "you are SurondShield AI-powered app that provides real-time, personalized risk alerts based on location and health data, helping users stay safe from weather changes, pollution, and natural disasters. Respond only on topics related to weather,weather alerts, environmental conditions, and crime safety in the community. If the query is not in this domain, say that you only handle community risk-related topics."},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": 500,
@@ -69,21 +68,16 @@ def get_risk_assessment(prompt, databricks_api_url, databricks_token):
         return None
 
 def main():
-    # Weatherbit API details
-    WEATHERBIT_API_KEY = "44fe16882bcd435ca332f1b4d6b83fc6"  
-    location = "DELHI,IN"  
-
-    alert = fetch_weather_alerts(WEATHERBIT_API_KEY, location)
-    
+    WEATHERBIT_API_KEY = "44fe16882bcd435ca332f1b4d6b83fc6" 
+    location = "hoboken,nj"
+    alert = fetch_weather_alerts(WEATHERBIT_API_KEY, location)    
     if not alert:
         alert = None
 
     age = 65         
-    weight = 80     
-    height = 170     
+    weight = 80      
+    height = 170    
     bmi = calculate_bmi(weight, height)
-
-    # Fetch current weather data
     current_data = fetch_current_weather(WEATHERBIT_API_KEY, location)
     if current_data and "data" in current_data and len(current_data["data"]) > 0:
         weather_info = current_data["data"][0]
@@ -91,8 +85,8 @@ def main():
         current_temp = weather_info.get("temp", "N/A")
         uv_index = weather_info.get("uv", "N/A")
         aqi = weather_info.get("aqi", "N/A")
-        precip = weather_info.get("precip", "N/A")
-        pop = weather_info.get("pop", "N/A")
+        precip = weather_info.get("precip")
+        pop = weather_info.get("pop")
         wind_speed = weather_info.get("wind_spd", "N/A")
         wind_direction = weather_info.get("wind_dir", "N/A")
         wind_cardinal = weather_info.get("wind_cdir", "N/A")
@@ -109,7 +103,6 @@ def main():
         print("No current weather data available.")
         return
 
-    # Fetch 24-hour forecast data and generate a simple summary
     forecast_data = fetch_hourly_forecast(WEATHERBIT_API_KEY, location, hours=24)
     if forecast_data and "data" in forecast_data:
         first_hour = forecast_data["data"][0]
@@ -121,30 +114,6 @@ def main():
     else:
         forecast_summary = "No hourly forecast available."
 
-    # Compose a prompt combining user details, current weather, alerts, and forecast summary for initial recommendation.
-    # initial_prompt = (
-    #     f"User Details:\n"
-    #     f"Age: {age}\n"
-    #     f"Weight: {weight} kg\n"
-    #     f"Height: {height} cm\n"
-    #     f"BMI: {bmi:.1f}\n\n"
-    #     f"Current Weather in {city_name}:\n"
-    #     f"Temperature: {current_temp}°C\n"
-    #     f"UV Index: {uv_index}\n"
-    #     f"AQI: {aqi}\n\n"
-    #     f"Weather Alerts: {'Present' if alert else 'None'}\n\n"
-    #     f"Liquid equivalent rain in mm:{precip}\n\n"
-    #     f"Probability of rain:{pop}\n\n"
-    #     f"Wind speed m/s:{wind_speed}\n\n"
-    #     f"Wind direction:{wind_direction}\n\n"
-    #     f"Cardinal wind direction (e.g., NE, SW):{wind_cardinal}\n\n"
-    #     f"Accumulated snowfall :{snow if snow else None}\n\n"
-    #     f"Forecast: {forecast_summary}\n\n"
-    #     f"cloud:{clouds}\n\n"
-    #     f"Total snow depth{snow_depth if snow_depth else None}\n"
-    #     f"Based on the above data, please provide recommendations and alerts if any significant weather risk "
-    #     f"is present for this individual. If there are no alerts or risks, simply say 'None'."
-    # )
     initial_prompt = (
         f"User Details:\n"
         f"Age: {age}\n"
@@ -163,7 +132,7 @@ def main():
         f"- Cloud coverage (%): {clouds}\n\n"
         f"Weather Alerts: {'Present' if alert else 'None'}\n\n"
         f"Forecast Summary:\n{forecast_summary}\n\n"
-        f"Based on the above data, please provide recommendations and alerts if any significant weather risk "
+        f"Based on the above data, please provide recommendations and alerts if any significant risk "
         f"is present for this individual. If there are no alerts or risks, simply say 'None'."
     )
         
@@ -174,15 +143,10 @@ def main():
     risk_response = get_risk_assessment(initial_prompt, DATABRICKS_API_URL, DATABRICKS_TOKEN)
     if risk_response:
         risk_assessment = risk_response.get("choices", [{}])[0].get("message", {}).get("content", "No detailed risk assessment returned.")
-        print("\nRisk Assessment Report:")
+        print("\Recommodations:")
         print(risk_assessment)
     else:
         print("Databricks Playground API call for risk assessment failed.")
-        return
-
-    print("\nYou can now ask follow-up questions related to community risk awareness.")
-    print("For example, try asking: 'Is the current UV index safe?' or 'Is there any hurricane approaching?'")
-    print("Type 'exit' to quit the interactive session.")
     
     while True:
         user_query = input("\nEnter your question: ")
@@ -190,15 +154,6 @@ def main():
             print("Thank you for using the community risk awareness tool.")
             break
 
-        # Build a prompt for the follow-up question including context
-        # followup_prompt = (
-        #     f"Based on the current weather data for {city_name} (Temperature: {current_temp}°C, UV Index: {uv_index}, AQI: {aqi},Liquid equivalent rain (mm): {precip}, Probability of rain (%): {pop},Wind speed (m/s): {wind_speed}\n,
-        #       Wind direction (degrees): {wind_direction} ({wind_cardinal}),
-        #       Accumulated snowfall (mm): {snow if snow else 'None'},
-        #       Total snow depth (mm): {snow_depth if snow_depth else 'None'},
-        #       Cloud coverage (%): {clouds},
-        #       Weather Alerts: {'Present' if alert else 'None'},
-        #       Forecast Summary:\n{forecast_summary}\n\n") 
         followup_prompt = (
             f"Based on the current weather data for {city_name} "
             f"(Temperature: {current_temp}°C, UV Index: {uv_index}, AQI: {aqi}, "
@@ -206,8 +161,10 @@ def main():
             f"Wind speed (m/s): {wind_speed}, Wind direction (degrees): {wind_direction} ({wind_cardinal}), "
             f"Accumulated snowfall (mm): {snow if snow else 'None'}, "
             f"Total snow depth (mm): {snow_depth if snow_depth else 'None'}, "
-            f"Cloud coverage (%): {clouds}, Weather Alerts: {'Present' if alert else 'None'})\n"
-            f"Forecast Summary:\n{forecast_summary}\n\n"   )     
+            f"Cloud coverage (%): {clouds}, Weather Alerts: {'Present' if alert else 'None'}),"
+            f"and the forecast summary: {forecast_summary},you are  a friendly chatbot and intreact with user assit them and answer the following question regarding any alert:,"
+            f"{user_query},"
+            f"Please provide recommendations if applicable and only when needed dont bring it up everytime.")     
         followup_response = get_risk_assessment(followup_prompt, DATABRICKS_API_URL, DATABRICKS_TOKEN)
         if followup_response:
             followup_answer = followup_response.get("choices", [{}])[0].get("message", {}).get("content", "No answer provided.")
