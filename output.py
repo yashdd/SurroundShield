@@ -1,9 +1,14 @@
 import requests
 from flask import Flask, request, jsonify
 app = Flask(__name__)
+from dotenv import load_dotenv
+import os
 
-DATABRICKS_API_URL = "https://dbc-01e46c6b-3bd2.cloud.databricks.com/serving-endpoints/databricks-meta-llama-3-3-70b-instruct/invocations"
-DATABRICKS_TOKEN = "dapie742d896626e16ed5a8c20015bd748ff"
+load_dotenv()
+
+DATABRICKS_API_URL = os.getenv("DATABRICKS_API_URL")
+DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
+WEATHERBIT_API_KEY = os.getenv("WEATHERBIT_API_KEY")
 
 def fetch_current_weather(api_key, lat,lon):
     base_url = "https://api.weatherbit.io/v2.0/current"
@@ -25,7 +30,6 @@ def fetch_weather_alerts(api_key, lat,lon):
     response = requests.get(url)
     if response.status_code == 200:
         alert_data = response.json()
-        # Assume if "alerts" key is empty or not present, then return None.
         if alert_data.get('alerts'):
             return alert_data
         else:
@@ -76,11 +80,10 @@ def get_risk_assessment(prompt, databricks_api_url, databricks_token):
         return None
 @app.route('/risk_assessment', methods=['POST'])
 def risk_ass():
-    WEATHERBIT_API_KEY = "44fe16882bcd435ca332f1b4d6b83fc6" 
     data = request.get_json(force=True)
     
-    lat= data.get("lat", 0)
-    lon=data.get("lon",0)
+    lat= data.get("lat")
+    lon=data.get("lon")
     alert = fetch_weather_alerts(WEATHERBIT_API_KEY, lat,lon)    
     if not alert:
         alert = None
@@ -180,7 +183,7 @@ def risk_ass():
             "bmi": bmi,
             "uv_index": uv_index,
             "aqi": aqi,
-            "weather_alerts": "Present" if alert else "None",
+            "weather_alerts":  alert if alert else "None",
             "forecast_summary": forecast_summary,
             "risk_assessment": risk_assessment,
             "precip": precip,
@@ -192,7 +195,7 @@ def risk_ass():
             "snow_depth": snow_depth,
             "clouds": clouds,
             "weather_description": weather_description,
-            "hourly_forcast":hourly_forecast
+            "hourly_forcast":hourly_forecast,
         }
         return jsonify(result), 200
 
@@ -218,20 +221,10 @@ def followup_query():
         "clouds": data.get("clouds", "N/A"),
         "forecast_summary": data.get("forecast_summary", "No forecast available"),
         "weather_alerts": data.get("weather_alerts", "None"),
-        "hourly_forcast":data.get("hourly_forcast")
+        "hourly_forcast":data.get("hourly_forcast"),
+        # "weather_alert":data.get("alert")
     }        
-    # city_name         = data.get("city_name", "Unknown")
-    # current_temp      = data.get("temp", "N/A")
-    # uv_index          = data.get("uv", "N/A")
-    # aqi               = data.get("aqi", "N/A")
-    # precip            = data.get("precip")
-    # pop               = data.get("pop")
-    # wind_speed        = data.get("wind_spd", "N/A")
-    # wind_direction    = data.get("wind_dir", "N/A")
-    # wind_cardinal     = data.get("wind_cdir", "N/A")
-    # snow              = data.get("snow", "N/A")
-    # snow_depth        = data.get("snow_depth", "N/A")
-    # clouds            = data.get("clouds", "N/A")
+
     followup_prompt = (
         f"Based on current weather data for {extracted_data['city_name']}:\n"
         f"- Temperature: {extracted_data['current_temp']}°C\n"
@@ -258,4 +251,4 @@ def followup_query():
             
 if __name__ == "__main__":
     # By default, Flask runs on port 5000
-    app.run(debug=True, port=2000)
+    app.run(debug=True, port=2400)
