@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './components/login';
 import Registration from './components/Registration';
@@ -13,12 +13,33 @@ import Logout from './components/Logout';
 import './styles/styles.css';
 
 const App = () => {
+  const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+
   return (
     <Router>
       <div className="app-container">
         <Navbar />
         <div className="content">
           <Routes>
+            {/* Routes with authentication checks */}
+            {/* 
+            <Route path="/" element={
+              isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+            } />
+            <Route path="/login" element={
+              isAuthenticated ? <Navigate to="/dashboard" /> : <Login />
+            } />
+            <Route path="/register" element={
+              isAuthenticated ? <Navigate to="/dashboard" /> : <Registration />
+            } />
+            <Route path="/dashboard" element={
+              isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
+            } />
+            <Route path="/chat" element={
+              isAuthenticated ? <ChatInterface /> : <Navigate to="/login" />
+            } />
+            */}
+            
             {/* Simple routes without authentication checks */}
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
