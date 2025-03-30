@@ -1,10 +1,6 @@
 import requests
 
 def fetch_current_weather(api_key, location):
-    """
-    Fetches current weather data (temperature, UV index, and AQI) for the given location
-    using Weatherbit's Current Weather API with a location string.
-    """
     base_url = "https://api.weatherbit.io/v2.0/current"
     params = {
         "city": location,
@@ -19,10 +15,6 @@ def fetch_current_weather(api_key, location):
         return None
 
 def fetch_weather_alerts(api_key, city):
-    """
-    Retrieves active weather alerts for the given city using Weatherbit's Alerts API.
-    If there are no alerts, the caller can treat the result as None.
-    """
     url = f"https://api.weatherbit.io/v2.0/alerts?city={city}&key={api_key}"
     response = requests.get(url)
     if response.status_code == 200:
@@ -37,10 +29,6 @@ def fetch_weather_alerts(api_key, city):
         return None
 
 def fetch_hourly_forecast(api_key, location, hours=24):
-    """
-    Retrieves hourly forecast data for the given location for the next specified hours
-    using Weatherbit's Hourly Forecast API.
-    """
     base_url = "https://api.weatherbit.io/v2.0/forecast/hourly"
     params = {
         "city": location,
@@ -56,18 +44,11 @@ def fetch_hourly_forecast(api_key, location, hours=24):
         return None
 
 def calculate_bmi(weight, height):
-    """
-    Calculates Body Mass Index (BMI) from weight in kilograms and height in centimeters.
-    """
     height_m = height / 100.0
     bmi = weight / (height_m * height_m)
     return bmi
 
 def get_risk_assessment(prompt, databricks_api_url, databricks_token):
-    """
-    Calls the Databricks Playground API (Foundation Model API) with a structured payload,
-    using the 'messages' format.
-    """
     headers = {
         "Authorization": f"Bearer {databricks_token}",
         "Content-Type": "application/json"
@@ -89,20 +70,17 @@ def get_risk_assessment(prompt, databricks_api_url, databricks_token):
 
 def main():
     # Weatherbit API details
-    WEATHERBIT_API_KEY = "44fe16882bcd435ca332f1b4d6b83fc6"  # Replace with your actual Weatherbit API key
-    location = "DELHI,IN"  # Location in "City,Country" format
+    WEATHERBIT_API_KEY = "44fe16882bcd435ca332f1b4d6b83fc6"  
+    location = "DELHI,IN"  
 
-    # Fetch weather alerts for the location
     alert = fetch_weather_alerts(WEATHERBIT_API_KEY, location)
     
-    # If there are no alerts, set it to None
     if not alert:
         alert = None
 
-    # User details (could be extended as needed)
-    age = 65         # Age in years
-    weight = 80      # Weight in kilograms
-    height = 170     # Height in centimeters
+    age = 65         
+    weight = 80     
+    height = 170     
     bmi = calculate_bmi(weight, height)
 
     # Fetch current weather data
@@ -190,11 +168,9 @@ def main():
     )
         
 
-    # Databricks Playground API details (update with your actual endpoint and token)
     DATABRICKS_API_URL = "https://dbc-01e46c6b-3bd2.cloud.databricks.com/serving-endpoints/databricks-meta-llama-3-3-70b-instruct/invocations"
     DATABRICKS_TOKEN = "dapie742d896626e16ed5a8c20015bd748ff"
 
-    # Get initial risk assessment / recommendation using the composed prompt.
     risk_response = get_risk_assessment(initial_prompt, DATABRICKS_API_URL, DATABRICKS_TOKEN)
     if risk_response:
         risk_assessment = risk_response.get("choices", [{}])[0].get("message", {}).get("content", "No detailed risk assessment returned.")
@@ -204,7 +180,6 @@ def main():
         print("Databricks Playground API call for risk assessment failed.")
         return
 
-    # After initial recommendations, allow user to interact with follow-up queries
     print("\nYou can now ask follow-up questions related to community risk awareness.")
     print("For example, try asking: 'Is the current UV index safe?' or 'Is there any hurricane approaching?'")
     print("Type 'exit' to quit the interactive session.")
