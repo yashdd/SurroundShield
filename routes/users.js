@@ -117,13 +117,18 @@ router.post("/login", redirectIfAuthenticated, async (req, res) => {    try {
         email: user.email,
         name: user.name
       };
+
+      const pythonApiUrl = 'http://127.0.0.1:5000/risk_assessment';
+      const response = await axios.post(pythonApiUrl, user);
+      console.log(response.data);
   
       return res.status(200).json({ 
         message: "Login successful",
         user: {
           id: user._id,
           name: user.name,
-          email: user.email
+          email: user.email,
+          riskData: response.data
         }
       });
   
@@ -170,15 +175,36 @@ router.post("/logout", (req, res) => {
     res.json({ message: "Logged out" });
 });
 
-router.route("/sendUserData/:id").get(async (req, res) => {
+router.route("/refreshData/:id").get(async (req, res) => {
     try {
         const user = await getUser(req.params.id);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
           }
-          const pythonApiUrl = 'http://127.0.0.1:5000/predict';
+          const pythonApiUrl = 'http://127.0.0.1:5000/risk_assessment';
           const response = await axios.post(pythonApiUrl, user);
-          return res.status(200).json(response.data);
+          return res.status(200).json({ 
+            message: "Login successful",
+            user: {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              riskData: response.data
+            }
+          });
+    } catch (e) {
+        console.error('Error sending user data:', e);
+        return res.status(500).json({ error: e });
+    }
+});
+
+router.route("/followup/:id").get(async (req, res) => {
+    try {
+        const user = await getUser(req.params.id);
+        const { query } = req.body;
+        const pythonApiUrl = 'http://127.0.0.1:5000/followup_query';
+        const response = await axios.post(pythonApiUrl, { user, query });
+        return res.status(200).json(response.data);
     } catch (e) {
         console.error('Error sending user data:', e);
         return res.status(500).json({ error: e });
