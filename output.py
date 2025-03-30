@@ -4,10 +4,12 @@ app = Flask(__name__)
 
 DATABRICKS_API_URL = "https://dbc-01e46c6b-3bd2.cloud.databricks.com/serving-endpoints/databricks-meta-llama-3-3-70b-instruct/invocations"
 DATABRICKS_TOKEN = "dapie742d896626e16ed5a8c20015bd748ff"
-def fetch_current_weather(api_key, location):
+
+def fetch_current_weather(api_key, lat,lon):
     base_url = "https://api.weatherbit.io/v2.0/current"
     params = {
-        "city": location,
+        "lat": lat,
+        "lon":lon,
         "key": api_key,
         "units": "metric"
     }
@@ -18,8 +20,8 @@ def fetch_current_weather(api_key, location):
         print("Error fetching current weather data:", response.status_code, response.text)
         return None
 
-def fetch_weather_alerts(api_key, city):
-    url = f"https://api.weatherbit.io/v2.0/alerts?city={city}&key={api_key}"
+def fetch_weather_alerts(api_key, lat,lon):
+    url = f"https://api.weatherbit.io/v2.0/alerts?lat={lat}&lon={lon}&key={api_key}"
     response = requests.get(url)
     if response.status_code == 200:
         alert_data = response.json()
@@ -32,12 +34,13 @@ def fetch_weather_alerts(api_key, city):
         print("Error fetching weather alerts:", response.status_code, response.text)
         return None
 
-def fetch_hourly_forecast(api_key, location, hours=24):
+def fetch_hourly_forecast(api_key, lat,lon, hours=24):
     base_url = "https://api.weatherbit.io/v2.0/forecast/hourly"
     params = {
-        "city": location,
-        "key": api_key,
+        "lat": lat,
+        "lon":lon,
         "hours": hours,
+        "key": api_key,
         "units": "metric"
     }
     response = requests.get(base_url, params=params)
@@ -74,13 +77,13 @@ def get_risk_assessment(prompt, databricks_api_url, databricks_token):
 @app.route('/risk_assessment', methods=['POST'])
 def risk_ass():
     WEATHERBIT_API_KEY = "44fe16882bcd435ca332f1b4d6b83fc6" 
-    location = "hoboken,nj"
-    alert = fetch_weather_alerts(WEATHERBIT_API_KEY, location)    
-    if not alert:
-        alert = None
     data = request.get_json(force=True)
     
-    location = data.get("location", "Hoboken,NJ")
+    lat= data.get("lat", 0)
+    lon=data.get("lon",0)
+    alert = fetch_weather_alerts(WEATHERBIT_API_KEY, lat,lon)    
+    if not alert:
+        alert = None
     name=data.get("name")
     email=data.get("email")
     age = data.get("age")
@@ -88,7 +91,7 @@ def risk_ass():
     height = data.get("height")
     bmi =data.get("bmi")
 
-    current_data = fetch_current_weather(WEATHERBIT_API_KEY, location)
+    current_data = fetch_current_weather(WEATHERBIT_API_KEY, lat,lon)
     if current_data and "data" in current_data and len(current_data["data"]) > 0:
         weather_info = current_data["data"][0]
         city_name = weather_info.get("city_name", "Unknown")
@@ -113,8 +116,20 @@ def risk_ass():
         print("No current weather data available.")
         return
 
-    forecast_data = fetch_hourly_forecast(WEATHERBIT_API_KEY, location, hours=24)
+    forecast_data = fetch_hourly_forecast(WEATHERBIT_API_KEY, lat,lon, hours=24)
     if forecast_data and "data" in forecast_data:
+    # Create JSON structure for hourly data
+        hourly_forecast = [
+            {
+                "time": hour.get("timestamp_local"),
+                "temperature": hour.get("temp"),
+                "uv_index": hour.get("uv"),
+                "precipitation": hour.get("precip"),
+                "humidity": hour.get("rh"),
+                "wind_speed": hour.get("wind_spd")
+            } 
+            for hour in forecast_data.get("data", [])
+        ]        
         first_hour = forecast_data["data"][0]
         last_hour = forecast_data["data"][-1]
         forecast_summary = (
@@ -129,20 +144,21 @@ def risk_ass():
         f"Age: {age}\n"
         f"Weight: {weight} kg\n"
         f"Height: {height} cm\n"
-        f"BMI: {bmi:.1f}\n\n"
+        f"BMI: {bmi}\n\n"
         f"Weather Data:\n"
         f"- UV Index: {uv_index}\n"
         f"- AQI (Air Quality Index): {aqi}\n"
         f"- Liquid equivalent rain (mm): {precip}\n"
         f"- Probability of rain (%): {pop}\n"
         f"- Wind speed (m/s): {wind_speed}\n"
+        f"- hourly_forcast : {hourly_forecast}\n"
         f"- Wind direction (degrees): {wind_direction} ({wind_cardinal})\n"
         f"- Accumulated snowfall (mm): {snow if snow else 'None'}\n"
         f"- Total snow depth (mm): {snow_depth if snow_depth else 'None'}\n"
         f"- Cloud coverage (%): {clouds}\n\n"
         f"Weather Alerts: {'Present' if alert else 'None'}\n\n"
         f"Forecast Summary:\n{forecast_summary}\n\n"
-        f"Based on the above data, please provide recommendations and alerts if any significant risk "
+        f"Based on the above data, please provide recommendations and alerts if any significant risk also mention if user has good helahtt form given data "
         f"is present for this individual. If there are no alerts or risks, simply say 'None'."
     )
         
@@ -155,13 +171,13 @@ def risk_ass():
         result = {
             "name":name,
             "email":email,
-            "location":location,
+            "location":city_name,
             "weight":weight,
             "age":age,
             "height":height,
             "city": city_name,
             "current_temp": current_temp,
-            "bmi": round(bmi, 1),
+            "bmi": bmi,
             "uv_index": uv_index,
             "aqi": aqi,
             "weather_alerts": "Present" if alert else "None",
@@ -176,6 +192,7 @@ def risk_ass():
             "snow_depth": snow_depth,
             "clouds": clouds,
             "weather_description": weather_description,
+            "hourly_forcast":hourly_forecast
         }
         return jsonify(result), 200
 
@@ -188,7 +205,7 @@ def followup_query():
     extracted_data = {
         "user_query": data.get("user_query", "No question provided so ask user to enter something"),
         "city_name": data.get("city_name", "Unknown"),
-        "current_temp": data.get("temp", "N/A"),
+        "current_temp": data.get("current_temp", "N/A"),
         "uv_index": data.get("uv", "N/A"),
         "aqi": data.get("aqi", "N/A"),
         "precip": data.get("precip"),
@@ -200,7 +217,8 @@ def followup_query():
         "snow_depth": data.get("snow_depth", "N/A"),
         "clouds": data.get("clouds", "N/A"),
         "forecast_summary": data.get("forecast_summary", "No forecast available"),
-        "weather_alerts": data.get("weather_alerts", "None")
+        "weather_alerts": data.get("weather_alerts", "None"),
+        "hourly_forcast":data.get("hourly_forcast")
     }        
     # city_name         = data.get("city_name", "Unknown")
     # current_temp      = data.get("temp", "N/A")
@@ -222,6 +240,7 @@ def followup_query():
         f"- Precipitation: {extracted_data['precip']} mm\n"
         f"- Rain Probability: {extracted_data['pop']}%\n"
         f"- Wind: {extracted_data['wind_speed']} m/s, {extracted_data['wind_direction']}° ({extracted_data['wind_cardinal']})\n"
+        f"- hourly_forcast : {extracted_data['hourly_forcast']}\n"
         f"- Snow: {extracted_data['snow']} mm\n"
         f"- Snow Depth: {extracted_data['snow_depth']} mm\n"
         f"- Cloud Cover: {extracted_data['clouds']}%\n"
@@ -230,13 +249,13 @@ def followup_query():
         f"Please provide recommendations if applicable and only when needed dont bring it up everytime. and if you get empty query ask user to give something")     
     
     followup_response = get_risk_assessment(followup_prompt, DATABRICKS_API_URL, DATABRICKS_TOKEN)
-    # if not followup_response:
-    #     return jsonify({"error": "Failed to call Databricks for follow-up query."}), 500
+    if not followup_response:
+        return jsonify({"error": "Failed to call Databricks for follow-up query."}), 500
 
-    # answer = followup_response.get("choices", [{}])[0].get("message", {}).get("content", "No answer returned.")
-    return jsonify({"answer": followup_response}), 200
+    answer = followup_response.get("choices", [{}])[0].get("message", {}).get("content", "No answer returned.")
+    return jsonify({"answer": answer}), 200
 
             
 if __name__ == "__main__":
     # By default, Flask runs on port 5000
-    app.run(debug=True, port=7000)
+    app.run(debug=True, port=2000)

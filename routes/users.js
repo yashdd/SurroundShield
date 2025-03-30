@@ -5,7 +5,8 @@ import MongoStore from 'connect-mongo';
 import { createUser, getUser, updateUser, deleteUser, getUserByEmail } from "../data/users.js";
 import { users } from "../config/mongoCollections.js";
 import axios from "axios";
-// import { redirectIfAuthenticated } from "./authMiddleware.js";
+
+import jwt from "jsonwebtoken";
 
 
 const router = express.Router();
@@ -14,9 +15,9 @@ const router = express.Router();
 
 router.route("/").post(async (req, res) => {
     try {
-        const { name, email, password, age, height, weight, bmi, location } = req.body;
+        const { name, email, password, age, height, weight, bmi, lat, lon } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await createUser(name, email, hashedPassword, age, height, weight, bmi, location);
+        const user = await createUser(name, email, hashedPassword, age, height, weight, bmi, lat, lon);
         // console.log(req.body);
 
         return res.status(201).json(user);
@@ -35,8 +36,8 @@ router.route("/:id").get(async (req, res) => {
     }
 }).put(async (req, res) => {
     try {
-        const { name, age, height, weight, bmi, location } = req.body;
-        const user = await updateUser(req.params.id, name, age, height, weight, bmi, location);
+        const { name, age, height, weight, bmi, lat, lon } = req.body;
+        const user = await updateUser(req.params.id, name, age, height, weight, bmi, lat, lon);
         return res.status(200).json(user);
     } catch (e) {
         return res.status(404).json({ error: e });
@@ -117,21 +118,21 @@ router.post("/login", async (req, res) => {    try {
         name: user.name
       };
 
-    //   const pythonApiUrl = 'http://127.0.0.1:5000/risk_assessment';
-    //   const response = await axios.post(pythonApiUrl, user);
-    //   console.log(response.data);
-  
-    //   return res.status(200).json({ 
-    //     message: "Login successful",
-    //     user: {
-    //       id: user._id,
-    //       name: user.name,
-    //       email: user.email,
-    //       riskData: response.data
-    //     }
-    //   });
+      const pythonApiUrl = 'http://127.0.0.1:7000/risk_assessment';
+      const response = await axios.post(pythonApiUrl, user);
+      console.log(response.data);
 
-    return res.status(200).json({ message: "Login successful" });
+    console.log(user);
+  
+      return res.status(200).json({ 
+        message: "Login successful",
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        //   riskData: response.data
+        }
+      });
   
     } catch (e) {
       console.error("Login error:", e);
@@ -182,7 +183,7 @@ router.route("/refreshData/:id").get(async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
           }
-          const pythonApiUrl = 'http://127.0.0.1:5000/risk_assessment';
+          const pythonApiUrl = 'http://127.0.0.1:7000/risk_assessment';
           const response = await axios.post(pythonApiUrl, user);
           return res.status(200).json({ 
             message: "Login successful",
@@ -203,9 +204,39 @@ router.route("/followup/:id").get(async (req, res) => {
     try {
         const user = await getUser(req.params.id);
         const { query } = req.body;
-        const pythonApiUrl = 'http://127.0.0.1:5000/followup_query';
+        const pythonApiUrl = 'http://127.0.0.1:7000/followup_query';
         const response = await axios.post(pythonApiUrl, { user, query });
         return res.status(200).json(response.data);
+    } catch (e) {
+        console.error('Error sending user data:', e);
+        return res.status(500).json({ error: e });
+    }
+});
+
+router.route("/sendUserData/:id").get(async (req, res) => {
+    try {
+        const user = await getUser(req.params.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+          const pythonApiUrl = 'http://127.0.0.1:5000/predict';
+          const response = await axios.post(pythonApiUrl, user);
+          return res.status(200).json(response.data);
+    } catch (e) {
+        console.error('Error sending user data:', e);
+        return res.status(500).json({ error: e });
+    }
+});
+
+router.route("/sendUserData/:id").get(async (req, res) => {
+    try {
+        const user = await getUser(req.params.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+          const pythonApiUrl = 'http://127.0.0.1:5000/predict';
+          const response = await axios.post(pythonApiUrl, user);
+          return res.status(200).json(response.data);
     } catch (e) {
         console.error('Error sending user data:', e);
         return res.status(500).json({ error: e });
