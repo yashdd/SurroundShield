@@ -181,9 +181,9 @@ router.post("/logout", (req, res) => {
     res.json({ message: "Logged out" });
 });
 
-router.route("/refreshData").get(async (req, res) => {
+router.route("/refreshData/:id").get(async (req, res) => {
     try {
-        const user = req.session.user._id;
+        const user = await getUser(req.params.id);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
           }
@@ -205,13 +205,13 @@ router.route("/refreshData").get(async (req, res) => {
     }
 });
 
-router.route("/followup").get(async (req, res) => {
+router.route("/followup/:id").get(async (req, res) => {
     try {
-        const user = req.session.user._id;
+        const user = await getUser(req.params.id);
         const { query } = req.body;
-        const riskData = req.session.user.riskData;
+        const riskData = user.riskData;
         const pythonApiUrl = 'http://127.0.0.1:7000/followup_query';
-        const response = await axios.post(pythonApiUrl, { query });
+        const response = await axios.post(pythonApiUrl, { query, riskData });
         return res.status(200).json(response.data);
     } catch (e) {
         console.error('Error sending user data:', e);
