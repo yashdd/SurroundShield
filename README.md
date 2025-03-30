@@ -229,28 +229,6 @@ SurroundShield takes security seriously:
 -   Secure API endpoints
 -   Data encryption
 
-## Future Roadmap 🗺️
-
-We're constantly improving SurroundShield. Here's what's coming:
-
--   [ ] Mobile app version
--   [ ] Health goal setting
--   [ ] Progress visualization
--   [ ] Community features
--   [ ] Integration with health devices
--   [ ] Advanced AI features
--   [ ] Real-time health monitoring
--   [ ] Integration with wearable devices
-
-## Support 💬
-
-Need help? We're here for you:
-
--   Open an issue
--   Contact our support team
--   Check our documentation
--   Join our community forum
-
 ## License 📄
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
