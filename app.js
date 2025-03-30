@@ -25,8 +25,9 @@ app.use(cors({
   }));
 // Routes setup
 app.use("/api/users", userRoutes); // Mount user routes
-app.use("/api", protectedRoutes);
+// app.use("/api", protectedRoutes);
 constructorMethod(app); // Other routes
+
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
