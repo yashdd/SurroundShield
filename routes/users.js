@@ -5,6 +5,8 @@ import MongoStore from 'connect-mongo';
 import { createUser, getUser, updateUser, deleteUser, getUserByEmail } from "../data/users.js";
 import { users } from "../config/mongoCollections.js";
 import axios from "axios";
+import { redirectIfAuthenticated } from "./authMiddleware.js";
+
 
 const router = express.Router();
 
@@ -88,45 +90,79 @@ router.route("/:id").get(async (req, res) => {
 //         return res.status(500).json({ error: "An error occurred during login" });
 //     }
 // });
-
-router.post("/login", async (req, res) => {
+// Login Route
+router.post("/login", redirectIfAuthenticated, async (req, res) => {    try {
+      const { email, password } = req.body;
+  
+      // Validate input
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+      }
+  
+      // Get user from database
+      const user = await getUserByEmail(email);
+      if (!user) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+  
+      // Compare passwords
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+  
+      // Create session
+      req.session.user = {
+        id: user._id,
+        email: user.email,
+        name: user.name
+      };
+  
+      return res.status(200).json({ 
+        message: "Login successful",
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email
+        }
+      });
+  
+    } catch (e) {
+      console.error("Login error:", e);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  
+  // Logout Route
+  router.get("/logout", (req, res) => {
     try {
-        console.log("Login request received:", req.body);
-        const userCollection = await users();
-        const { email, password } = req.body;
-
-        // 1. Find user
-        const user = await userCollection.findOne({ email });
-        if (!user) return res.status(401).json({ error: "Invalid credentials" });
-
-        // 2. Check password
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(401).json({ error: "Invalid credentials" });
-
-        // 3. Set session
-        req.session.user = {
-            id: user._id,
-            email: user.email,
-            name: user.name,
-        };
-
-        // 4. Respond without password
-        res.json({ user: { id: user._id, email: user.email, name: user.name } });
-
-    } catch (error) {
-        console.error("Login error:", error);
-        res.status(500).json({ error: "Login failed" });
+      req.session.destroy((err) => {
+        if (err) {
+            console.log("eff")
+          return res.status(500).json({ error: "Could not log out" });
+        }
+        console.log("eff")
+        res.clearCookie("connect.sid");
+        return res.status(200).json({ message: "Logout successful" });
+      });
+    } catch (e) {
+      res.status(500).json({ error: "Internal server error" });
     }
-});
-
-// Check Authentication
-router.get("/check-auth", (req, res) => {
+  });
+  
+  
+  // Check Auth Status
+  router.get("/check-auth", (req, res) => {
     if (req.session.user) {
-        res.json({ loggedIn: true, user: req.session.user });
-    } else {
-        res.json({ loggedIn: false });
+      return res.status(200).json({ 
+        isAuthenticated: true,
+        user: req.session.user 
+      });
     }
-});
+    return res.status(200).json({ isAuthenticated: false });
+  });
+  
+
 
 // Logout
 router.post("/logout", (req, res) => {
@@ -148,4 +184,7 @@ router.route("/sendUserData/:id").get(async (req, res) => {
         return res.status(500).json({ error: e });
     }
 });
+
 export { router as userRoutes };
+
+
