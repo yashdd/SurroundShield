@@ -5,7 +5,7 @@ import MongoStore from 'connect-mongo';
 import { createUser, getUser, updateUser, deleteUser, getUserByEmail } from "../data/users.js";
 import { users } from "../config/mongoCollections.js";
 import axios from "axios";
-import { redirectIfAuthenticated } from "./authMiddleware.js";
+// import { redirectIfAuthenticated } from "./authMiddleware.js";
 
 
 const router = express.Router();
@@ -91,7 +91,7 @@ router.route("/:id").get(async (req, res) => {
 //     }
 // });
 // Login Route
-router.post("/login", redirectIfAuthenticated, async (req, res) => {    try {
+router.post("/login", async (req, res) => {    try {
       const { email, password } = req.body;
   
       // Validate input
@@ -110,7 +110,6 @@ router.post("/login", redirectIfAuthenticated, async (req, res) => {    try {
       if (!passwordMatch) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
-  
       // Create session
       req.session.user = {
         id: user._id,
@@ -118,19 +117,21 @@ router.post("/login", redirectIfAuthenticated, async (req, res) => {    try {
         name: user.name
       };
 
-      const pythonApiUrl = 'http://127.0.0.1:5000/risk_assessment';
-      const response = await axios.post(pythonApiUrl, user);
-      console.log(response.data);
+    //   const pythonApiUrl = 'http://127.0.0.1:5000/risk_assessment';
+    //   const response = await axios.post(pythonApiUrl, user);
+    //   console.log(response.data);
   
-      return res.status(200).json({ 
-        message: "Login successful",
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          riskData: response.data
-        }
-      });
+    //   return res.status(200).json({ 
+    //     message: "Login successful",
+    //     user: {
+    //       id: user._id,
+    //       name: user.name,
+    //       email: user.email,
+    //       riskData: response.data
+    //     }
+    //   });
+
+    return res.status(200).json({ message: "Login successful" });
   
     } catch (e) {
       console.error("Login error:", e);

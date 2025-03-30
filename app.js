@@ -3,6 +3,8 @@ import cors from "cors"; // Import CORS
 import session from 'express-session';
 import constructorMethod from "./routes/index.js";
 import { userRoutes } from "./routes/users.js"; // Import user routes
+// import  { protectedRoutes } from "./routes/protected.js"; // Import product routes
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,7 +27,7 @@ app.use(cors({
   }));
 // Routes setup
 app.use("/api/users", userRoutes); // Mount user routes
-app.use("/api", protectedRoutes);
+// app.use("/api", protectedRoutes);
 constructorMethod(app); // Other routes
 
 // Global error handling middleware
