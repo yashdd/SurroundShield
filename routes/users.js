@@ -7,6 +7,7 @@ import { riskAssessment } from "../data/pythonapis.js";
 import { users } from "../config/mongoCollections.js";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 
 
 const router = express.Router();
@@ -301,4 +302,23 @@ router.route("/updateLocation").post(async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 export { router as userRoutes };
+=======
+router.route("/sendUserData/:id").get(async (req, res) => {
+    try {
+        const user = await getUser(req.params.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+          const pythonApiUrl = 'http://127.0.0.1:5000/predict';
+          const response = await axios.post(pythonApiUrl, user);
+          return res.status(200).json(response.data);
+    } catch (e) {
+        console.error('Error sending user data:', e);
+        return res.status(500).json({ error: e });
+    }
+});
+
+export { router as userRoutes };
+>>>>>>> 4f115e4 (sendDataToApi)
