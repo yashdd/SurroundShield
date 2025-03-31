@@ -250,5 +250,4 @@ def followup_query():
 
             
 if __name__ == "__main__":
-    # By default, Flask runs on port 5000
     app.run(debug=True, port=2400)
