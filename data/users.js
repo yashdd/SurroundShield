@@ -2,10 +2,10 @@ import express from "express";
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 
-export const createUser = async (name, email, password, age, height, weight, bmi, lat, lon) => {
+export const createUser = async (name, email, password, age, height, weight, bmi, location, lat, lon) => {
     try {
         const userCollection = await users();
-        const user = await userCollection.insertOne({ name, email, password, age, height, weight, bmi, lat, lon });
+        const user = await userCollection.insertOne({ name, email, password, age, height, weight, bmi, location, lat, lon });
         return user;
     } catch (e) {
         console.log(e);

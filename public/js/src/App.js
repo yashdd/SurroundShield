@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Login from './components/login';
+import Login from './components/Login';
 import Registration from './components/Registration';
 import Dashboard from './components/Dashboard';
 import ChatInterface from './components/chat_interface';
@@ -11,7 +11,12 @@ import Privacy from './components/Privacy';
 import ForgotPassword from './components/ForgotPassword';
 import Logout from './components/Logout';
 import './styles/styles.css';
+import cors from "cors"; // Import CORS
 
+// app.use(cors({
+//     origin: 'http://localhost:3000', // Your frontend URL
+//     credentials: true
+//   }));
 const App = () => {
   const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
 

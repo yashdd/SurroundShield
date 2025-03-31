@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, MapPin, Check, User, Calendar, Ruler, Weight, Navigation, Mail, Lock } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/styles.css'; // This will use our updated CSS
+import '../styles/styles.css';  
+import { useNavigate } from 'react-router-dom';
+
+
+
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -13,8 +17,11 @@ const RegistrationPage = () => {
     height: '',
     weight: '',
     bmi: '',
+    lat: '',
+    lon: '',
     location: ''
   });
+  const navigate = useNavigate();
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loadingLocation, setLoadingLocation] = useState(false);
@@ -22,6 +29,7 @@ const RegistrationPage = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -47,102 +55,85 @@ const RegistrationPage = () => {
     setError(''); // Clear error when user makes changes
   };
 
-  // const getLocation = () => {
-  //   setLoadingLocation(true);
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const { latitude, longitude } = position.coords;
-  //         setFormData(prev => ({ ...prev, location: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` }));
-  //         setLoadingLocation(false);
-  //       },
-  //       () => {
-  //         setError('Unable to fetch location. Please enable location services.');
-  //         setLoadingLocation(false);
-  //       }
-  //     );
-  //   } else {
-  //     setError('Geolocation is not supported by this browser');
-  //     setLoadingLocation(false);
-  //   }
-  // };
 
-  const reverseGeocode = async (lat, lng) => {
+
+ const reverseGeocode = async (lat, lon) => {
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
       );
       const data = await response.json();
       
       if (data.address) {
-        const { city, town, village, county, state, country } = data.address;
-        const locationName = city || town || village || county;
-        const locationDetails = `${locationName ? `${locationName}, ` : ''}${state || ''}${country ? `, ${country}` : ''}`;
-        
+        const { city, state } = data.address;
+        const locationDetails = `${city || 'Unknown City'}, ${state || 'Unknown State'}`;
+
         setFormData(prev => ({
           ...prev,
-          location: `${lat.toFixed(4)}, ${lng.toFixed(4)}`,
+          location: `${lat.toFixed(4)}, ${lon.toFixed(4)}`,
           locationDetails
         }));
         setLocationInput(locationDetails);
       }
     } catch (err) {
       console.error('Reverse geocoding error:', err);
-      setFormData(prev => ({
-        ...prev,
-        location: `${lat.toFixed(4)}, ${lng.toFixed(4)}`,
-        locationDetails: 'Location detected (address not available)'
-      }));
       setLocationInput('Location detected (address not available)');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Location detection handler
   const getLocation = () => {
-    setLoadingLocation(true);
+    setLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
           await reverseGeocode(latitude, longitude);
-          setLoadingLocation(false);
+          console.log('Location detected:', latitude, longitude);
+          setLoading(false);
         },
         () => {
           setError('Unable to fetch location. Please enable location services or enter manually.');
-          setLoadingLocation(false);
+          setLoading(false);
         }
       );
     } else {
       setError('Geolocation is not supported by this browser. Please enter manually.');
-      setLoadingLocation(false);
+      setLoading(false);
     }
   };
 
-  // Location search handler
   const handleLocationSearch = async (query) => {
     if (query.length < 3) {
       setSuggestions([]);
       return;
     }
-
+  
+    setLoading(true); // Set loading to true when search begins
+  
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1`
       );
       const data = await response.json();
-      
-      setSuggestions(data.map(item => ({
-        displayName: item.display_name,
-        lat: item.lat,
-        lon: item.lon
-      })));
+  
+      if (Array.isArray(data)) {
+        setSuggestions(data.map(item => ({
+          displayName: item.display_name,
+          lat: item.lat,
+          lon: item.lon
+        })));
+      }
     } catch (err) {
       console.error('Location search error:', err);
       setSuggestions([]);
+    } finally {
+      setLoading(false); // Set loading to false after the operation completes
     }
   };
-
-  // Handle location selection from suggestions
+  
+ 
   const handleSelectLocation = (suggestion) => {
     setFormData(prev => ({
       ...prev,
@@ -153,34 +144,16 @@ const RegistrationPage = () => {
     setShowSuggestions(false);
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   const { name, age, height, weight, location } = formData;
-    
-  //   if (!name || !age || !height || !weight || !location) {
-  //     setError('Please fill in all required fields');
-  //     return;
-  //   }
-    
-  //   if (age < 18 || age > 120) {
-  //     setError('Please enter a valid age (18-120)');
-  //     return;
-  //   }
-    
-  //   setError('');
-  //   setSubmitted(true);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, age, height, weight, location, bmi } = formData; // Destructure all fields from formData
+    const { name, email, password, age, height, weight, location, bmi, lat, lon } = formData;
 
-  
-    if (!name || !age || !height || !weight || !location) {
-      setError('Please fill in all required fields');
-      return;
-    }
-  
+  // Validation: Check if all required fields are filled in
+  if (!name || !age || !height || !weight || !location || !email || !password ) {
+    setError('Please fill in all required fields');
+    return;  // Exit function if any required field is missing
+  }
     if (age < 18 || age > 120) {
       setError('Please enter a valid age (18-120)');
       return;
@@ -191,18 +164,19 @@ const RegistrationPage = () => {
     }
   
     try {
-      const response = await fetch('http://localhost:5000/api/users/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name, email, password,age, height, weight, bmi, location })
+        body: JSON.stringify({ name, email, password,age, height, weight, bmi, location,lat: parseFloat(lat), lon: parseFloat(lon) })
       });
   
       const data = await response.json();
   
       if (response.ok) {
         setSubmitted(true);
+        navigate('/login');
       } else {
         setError(data.error || 'Something went wrong. Please try again.');
       }
@@ -225,7 +199,7 @@ const RegistrationPage = () => {
 
   const { category, color } = getBmiCategory();
 
-  if (submitted) {
+  if (submitted) { 
     return (
       <div className="app-container success-view">
         <div className="card success-card">
@@ -238,6 +212,9 @@ const RegistrationPage = () => {
               Thank you for registering, <strong>{formData.name}</strong>. Your health profile has been created.
             </p>
             <div className="user-details mb-4">
+            <div className="detail-item">
+                <span>Age:</span> {formData.email} years
+              </div>
               <div className="detail-item">
                 <span>Age:</span> {formData.age} years
               </div>
@@ -259,6 +236,12 @@ const RegistrationPage = () => {
               className="btn btn-primary btn-lg w-100 py-3"
             >
               Back to Form
+            </button>
+            <button 
+              onClick={() => setSubmitted(false)}
+              className="btn btn-primary btn-lg w-100 py-3"
+            >
+              Go to Login
             </button>
           </div>
         </div>
@@ -448,66 +431,67 @@ const RegistrationPage = () => {
               </small>
             </div>
             {/* Email Field */}
-<div className="mb-4">
-  <label className="form-label">
-    <div className="d-flex align-items-center">
-      <Mail size={18} className="me-2" />
-      Email Address
-    </div>
-  </label>
-  <input
-    type="email"
-    name="email"
-    value={formData.email}
-    onChange={handleChange}
-    className="form-control form-control-lg"
-    placeholder="Enter your email"
-    required
-  />
-</div>
+            <div className="mb-4">
+              <label className="form-label">
+                <div className="d-flex align-items-center">
+                  <Mail size={18} className="me-2" />
+                  Email Address
+                </div>
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="form-control form-control-lg"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
 
-{/* Password Field */}
-<div className="mb-4">
-  <label className="form-label">
-    <div className="d-flex align-items-center">
-      <Lock size={18} className="me-2" />
-      Password
-    </div>
-  </label>
-  <input
-    type="password"
-    name="password"
-    value={formData.password}
-    onChange={handleChange}
-    className="form-control form-control-lg"
-    placeholder="Create a password"
-    required
-    minLength="8"
-  />
-</div>
+            {/* Password Field */}
+            <div className="mb-4">
+              <label className="form-label">
+                <div className="d-flex align-items-center">
+                  <Lock size={18} className="me-2" />
+                  Password
+                </div>
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="form-control form-control-lg"
+                placeholder="Create a password"
+                required
+                minLength="8"
+              />
+            </div>
 
-{/* Confirm Password Field */}
-<div className="mb-4">
-  <label className="form-label">
-    <div className="d-flex align-items-center">
-      <Lock size={18} className="me-2" />
-      Confirm Password
-    </div>
-  </label>
-  <input
-    type="password"
-    name="confirmPassword"
-    value={formData.confirmPassword}
-    onChange={handleChange}
-    className={`form-control form-control-lg ${passwordError ? 'is-invalid' : ''}`}
-    placeholder="Confirm your password"
-    required
-    minLength="8"
-  />
-  {passwordError && (
-    <div className="invalid-feedback">{passwordError}</div>
-  )}
-</div>
+              {/* Confirm Password Field */}
+              <div className="mb-4">
+                <label className="form-label">
+                  <div className="d-flex align-items-center">
+                    <Lock size={18} className="me-2" />
+                    Confirm Password
+                  </div>
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className={`form-control form-control-lg ${passwordError ? 'is-invalid' : ''}`}
+                  placeholder="Confirm your password"
+                  required
+                  minLength="8"
+                />
+                {passwordError && (
+                  <div className="invalid-feedback">{passwordError}</div>
+                )}
+              </div>
+
             {/* Submit Button */}
             <button
               type="submit"

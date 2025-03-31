@@ -76,12 +76,13 @@ const ChatInterface = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+  
 
   // Initial greeting message when component mounts
   useEffect(() => {
     const welcomeMessage = {
       id: Date.now(),
-      text: "Hello! I'm Shield AI, your personal health assistant. How can I help you today?",
+      text: `Hello! I'm ShieldSurround, ${parsedRiskAssessment}`,
       sender: 'bot',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
@@ -192,6 +193,11 @@ const ChatInterface = () => {
     return '#7c3aed'; // Extreme
   };
 
+  const risk_data = JSON.parse(sessionStorage.getItem('riskdata')) || {};
+  const parsedRiskAssessment = risk_data['risk_assessment']
+  ;
+
+
   return (
     <div className={`app-container ${isDarkMode ? 'dark-theme' : ''}`}>
       <div className="main-content">
@@ -258,7 +264,7 @@ const ChatInterface = () => {
         {/* Chat container */}
         <div className="chat-container">
           <div className="chat-header">
-            <h2>Shield AI</h2>
+            <h2>Shield Surround</h2>
             <div className="header-controls">
               <button className="theme-toggle" onClick={toggleTheme} aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} theme`}>
                 {isDarkMode ? '☀️' : '🌙'}
