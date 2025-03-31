@@ -116,12 +116,6 @@ router.route("/:id").get(async (req, res) => {
     //     return res.status(401).json({ error: "Invalid credentials" });
     //   }
   
-    //   // Compare passwords
-    //   const passwordMatch = await bcrypt.compare(password, user.password);
-    //   if (!passwordMatch) {
-    //     return res.status(401).json({ error: "Invalid credentials" });
-    //   }
-  
       
 //     const user = sessionStorage.getItem('user');
 //     const pythonApiUrl = 'http://127.0.0.1:7000/risk_assessment';
@@ -237,27 +231,6 @@ router.post("/login", async (req, res) => {
     // Validate input
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
-router.route("/refreshData/:id").get(async (req, res) => {
-    try {
-        const user = await getUser(req.params.id);
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-          }
-          const pythonApiUrl = 'http://127.0.0.1:7000/risk_assessment';
-          const response = await axios.post(pythonApiUrl, user);
-          req.session.user.riskData = response.data;
-          return res.status(200).json({ 
-            message: "Login successful",
-            user: {
-              id: user._id,
-              name: user.name,
-              email: user.email,
-              riskData: response.data
-            }
-          });
-    } catch (e) {
-        console.error('Error sending user data:', e);
-        return res.status(500).json({ error: e });
     }
 
     // Fetch user from database
@@ -270,26 +243,16 @@ router.route("/refreshData/:id").get(async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
-
-router.route("/followup/:id").get(async (req, res) => {
-    try {
-        const user = await getUser(req.params.id);
-        const { query } = req.body;
-        const riskData = user.riskData;
-        const pythonApiUrl = 'http://127.0.0.1:7000/followup_query';
-        const response = await axios.post(pythonApiUrl, { query, riskData });
-        return res.status(200).json(response.data);
-    } catch (e) {
-        console.error('Error sending user data:', e);
-        return res.status(500).json({ error: e });
     }
-
+    
+    const riskData = await hitPythonApis(user);
     // Store user details in session
     req.session.user = {
       id: user._id,
       email: user.email,
       name: user.name,
       role: user.role || "user", // Default role if not set
+      riskData: riskData
     };
 
     console.log("User logged in:", req.session.user);
@@ -328,5 +291,3 @@ router.get("/logout", async (req, res) => {
 });
 
 export { router as userRoutes };
-
-
