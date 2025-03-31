@@ -6,6 +6,7 @@
     "height": 180,  
     "weight": 75,   
     "bmi": 23.1,
+    "location":"Jersey City",
     "lat": 40.7128,
     "lon": -74.0060
   }

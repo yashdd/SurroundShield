@@ -9,7 +9,7 @@ const Logout = () => {
   useEffect(() => {
     const performLogout = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users/logout', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/users/logout`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -17,7 +17,6 @@ const Logout = () => {
         const data = await response.json();
         
         // Clear session storage regardless of response
-        sessionStorage.removeItem('authSession');
         sessionStorage.removeItem('user');
         sessionStorage.removeItem('isAuthenticated');
 

@@ -2,12 +2,51 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../styles/chat_interface.css';
 
 const ChatInterface = () => {
+
+  const [locationString, setLocationString] = useState("Location not found");
+
+  // const location = sessionStorage.getItem('location') || "Unknown";
+  // const location = JSON.parse(sessionStorage.getItem('location'));
+  // const [lat, lon] = location.split(",").map(Number);
+
+  // const user = JSON.parse(sessionStorage.getItem('user')) || {}; // Default to empty object if 'user' is not found
+  // // const { lat, lon } = user.location || { lat: 0, lon: 0 }; // Access the location property
+  // const lon = user.lon || 0; // Default to 0 if 'lon' is not found
+  // const lat = user.lat || 0; // Default to 0 if 'lat' is not found
+  // useEffect(() => {
+  //   const fetchLocationDetails = async () => {
+  //     try {
+  //       const geoResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+  //       const geoData = await geoResponse.json();
+
+  //       const cityName = geoData.address.city || geoData.address.town || geoData.address.village || "Unknown City";
+  //       const stateName = geoData.address.state || "Unknown State";
+
+  //       setLocationString(`${cityName}, ${stateName}`);
+  //     } catch (fetchError) {
+  //       console.error("Error fetching location details:", fetchError);
+  //       setLocationString("Location not found");
+  //     }
+  //   };
+
+  //   fetchLocationDetails();
+  // }, [lat, lon]);
+
+  //     const region = sessionStorage.getItem('region') || "";
+  //     const temp = sessionStorage.getItem('temp') || "--°";
+  //     const condition = sessionStorage.getItem('condition') || "Unknown";
+  //     const aqi = sessionStorage.getItem('aqi') || "--";
+  //     const aqiLabel = sessionStorage.getItem('aqiLabel') || "Unknown";
+  //     const uvIndex = sessionStorage.getItem('uvIndex') || "--";
+  //     const uvLabel = sessionStorage.getItem('uvLabel') || "Unknown";
+  //     const humidity = sessionStorage.getItem('humidity') || "--";
+  //     const windSpeed = sessionStorage.getItem('windSpeed') || "--";
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [weatherData, setWeatherData] = useState({
-    location: 'New York City',
+    location: "New York",
     region: 'New York, USA',
     temp: '25°C',
     condition: 'Sunny',
@@ -37,12 +76,13 @@ const ChatInterface = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+  
 
   // Initial greeting message when component mounts
   useEffect(() => {
     const welcomeMessage = {
       id: Date.now(),
-      text: "Hello! I'm Shield AI, your personal health assistant. How can I help you today?",
+      text: `Hello! I'm ShieldSurround, ${parsedRiskAssessment}`,
       sender: 'bot',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
@@ -153,6 +193,11 @@ const ChatInterface = () => {
     return '#7c3aed'; // Extreme
   };
 
+  const risk_data = JSON.parse(sessionStorage.getItem('riskdata')) || {};
+  const parsedRiskAssessment = risk_data['risk_assessment']
+  ;
+
+
   return (
     <div className={`app-container ${isDarkMode ? 'dark-theme' : ''}`}>
       <div className="main-content">
@@ -219,7 +264,7 @@ const ChatInterface = () => {
         {/* Chat container */}
         <div className="chat-container">
           <div className="chat-header">
-            <h2>Shield AI</h2>
+            <h2>Shield Surround</h2>
             <div className="header-controls">
               <button className="theme-toggle" onClick={toggleTheme} aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} theme`}>
                 {isDarkMode ? '☀️' : '🌙'}

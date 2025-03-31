@@ -1,19 +1,19 @@
-import express from "express";
-import { authenticateUser } from "./authMiddleware.js";
+// import express from "express";
+// import { authenticateUser } from "./authMiddleware.js";
 
-const router = express.Router();
+// const router = express.Router();
 
-// Apply authenticateUser middleware to all protected routes
-router.use(authenticateUser);
+// // Apply authenticateUser middleware to all protected routes
+// router.use(authenticateUser);
 
-// Example protected route
-router.get("/dashboard", (req, res) => {
-  res.json({ 
-    message: "Welcome to your dashboard",
-    user: req.session.user 
-  });
-});
+// // Example protected route
+// router.get("/dashboard", (req, res) => {
+//   res.json({ 
+//     message: "Welcome to your dashboard",
+//     user: req.session.user 
+//   });
+// });
 
-// Add more protected routes here...
+// // Add more protected routes here...
 
-export default router;
+// export {router as protectedRoutes};

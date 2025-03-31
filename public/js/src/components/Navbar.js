@@ -16,14 +16,13 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/users/logout', {
-        method: 'GET',
-        credentials: 'include',
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/logout`, {
+        method: 'POST', // You can also use POST if needed
+        credentials: 'include', // Ensures the session or cookies are sent
       });
 
       const data = await response.json();
       if (data.message === 'Logout successful') {
-        sessionStorage.removeItem('authSession');
         sessionStorage.removeItem('user');
         sessionStorage.removeItem('isAuthenticated');
         navigate('/login');
