@@ -2,7 +2,8 @@ import express from "express";
 import bcrypt from "bcrypt";
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import { createUser, getUser, updateUser, deleteUser, getUserByEmail } from "../data/users.js";
+import { createUser, getUser, updateUser, deleteUser, getUserByEmail, updateLocation } from "../data/users.js";
+import { riskAssessment } from "../data/pythonapis.js";
 import { users } from "../config/mongoCollections.js";
 import axios from "axios";
 import jwt from "jsonwebtoken";
@@ -245,7 +246,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
     
-    const riskData = await hitPythonApis(user);
+    const riskData = await riskAssessment(user);
     // Store user details in session
     req.session.user = {
       id: user._id,
@@ -288,6 +289,16 @@ router.get("/logout", async (req, res) => {
     console.error("Logout error:", e);
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+router.route("/updateLocation").post(async (req, res) => {
+    try {
+        const { lat, lon } = req.body;
+        const user = await updateLocation(req.params.id, lat, lon);
+        return res.status(200).json(user);
+    } catch (e) {
+        return res.status(500).json({ error: e });
+    }
 });
 
 export { router as userRoutes };
