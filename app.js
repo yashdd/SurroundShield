@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import constructorMethod from "./routes/index.js";
 import { userRoutes } from "./routes/users.js"; // ✅ Correct Import
 import cookieParser from "cookie-parser";
-import logoutRoute from "./routes/logout.js"; // ✅ Correct Import
+import {logoutRoutes} from "./routes/logout.js"; // ✅ Correct Import
 dotenv.config();
 
 const app = express();
@@ -31,7 +31,6 @@ app.use(session({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/logout', logoutRoute);
 app.use(cors({
     origin: 'http://localhost:3000', // Your frontend URL
     credentials: true,
@@ -47,6 +46,8 @@ app.use((req, res, next) => {
 
 // Routes setup
 app.use("/users", userRoutes);
+app.use('/logout', logoutRoutes);
+
 constructorMethod(app); 
 
 // Global error handling middleware
