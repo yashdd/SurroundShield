@@ -3,12 +3,16 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 from dotenv import load_dotenv
 import os
+from pathlib import Path
+# load_dotenv()
 
-load_dotenv()
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 DATABRICKS_API_URL = os.getenv("DATABRICKS_API_URL")
 DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
 WEATHERBIT_API_KEY = os.getenv("WEATHERBIT_API_KEY")
+print(WEATHERBIT_API_KEY)
 
 def fetch_current_weather(api_key, lat,lon):
     base_url = "https://api.weatherbit.io/v2.0/current"
@@ -252,3 +256,5 @@ def followup_query():
 if __name__ == "__main__":
     # By default, Flask runs on port 5000
     app.run(debug=True, port=2400)
+    print("Hi")
+    print(WEATHERBIT_API_KEY)

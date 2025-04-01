@@ -3,6 +3,7 @@ import { riskAssessment, followupQuery } from '../data/pythonapis.js';
 
 const router = express.Router();
 
+
 router.route("/riskAssessment").post(async (req, res) => {
     try {
         const user = req.body;
@@ -16,9 +17,13 @@ router.route("/riskAssessment").post(async (req, res) => {
 
 router.route("/followupQuery").post(async (req, res) => {   
     try {
+        
         const user = req.body;
-        const riskData = req.session.riskData;
-        const followupData = await followupQuery(riskData, user.query);
+        console.log(user.message)
+        const riskData = user.riskData;
+        console.log(riskData)
+        const followupData = await followupQuery(riskData, user.message);
+        
         return res.status(200).json(followupData);
     } catch (e) {
         return res.status(500).json({ error: e });
