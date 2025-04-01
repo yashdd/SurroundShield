@@ -49,7 +49,8 @@ const Navbar = () => {
     <nav className="horizontal-navbar">
       <div className="nav-brand">
         <Shield className="logo-icon" />
-        <span className="logo-text">Shield AI</span>
+        <span className="logo-text">ShieldSurround
+        </span>
       </div>
 
       <div className="nav-links">

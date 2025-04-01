@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../styles/chat_interface.css';
+import ReactMarkdown from 'react-markdown';
 
 const ChatInterface = () => {
-
-  const [locationString, setLocationString] = useState("Location not found");
-
   // const location = sessionStorage.getItem('location') || "Unknown";
   // const location = JSON.parse(sessionStorage.getItem('location'));
   // const [lat, lon] = location.split(",").map(Number);
@@ -41,11 +39,36 @@ const ChatInterface = () => {
   //     const uvLabel = sessionStorage.getItem('uvLabel') || "Unknown";
   //     const humidity = sessionStorage.getItem('humidity') || "--";
   //     const windSpeed = sessionStorage.getItem('windSpeed') || "--";
+
+  const [locationString, setLocationString] = useState("Location not found");
+
+  
+  const storedUser = sessionStorage.getItem("session");
+const user = storedUser ? JSON.parse(storedUser).user : null;
+console.log((user))
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [weatherData, setWeatherData] = useState({
+  const [weatherData, setWeatherData] = useState(user?.riskData ? {
+    location: user.riskData.city || "Unknown",
+    region: user.riskData.location || "Unknown Region",
+    temp: `${user.riskData.current_temp}°C`,
+    condition: user.riskData.weather_description || "N/A",
+    aqi: user.riskData.aqi || "N/A",
+    aqiLabel: user.riskData.weather_alerts || "N/A",
+    uvIndex: user.riskData.uv_index || "N/A",
+    uvLabel: user.riskData.uv_index > 5 ? "High" : "Low",
+    humidity: user.riskData.hourly_forcast[0]?.humidity ? `${user.riskData.hourly_forcast[0].humidity}%` : "N/A",
+    windSpeed: `${user.riskData.wind_speed} m/s (${user.riskData.wind_cardinal})`,
+    hourlyForecast: user.riskData.hourly_forcast?.map(hour => ({
+      time: new Date(hour.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      temp: `${hour.temperature}°C`,
+      condition: hour.condition || "N/A"
+    })) || [],
+   
+
+} : {
     location: "New York",
     region: 'New York, USA',
     temp: '25°C',
@@ -66,8 +89,11 @@ const ChatInterface = () => {
       { time: '6PM', temp: '23°C', condition: 'Cloudy' },
       { time: '7PM', temp: '22°C', condition: 'Cloudy' }
     ]
-  });
+});
   const messagesEndRef = useRef(null);
+  const riskAssessment = user.riskData.risk_assessment 
+  ? user.riskData.risk_assessment 
+  : "No risk assessment available";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -82,7 +108,7 @@ const ChatInterface = () => {
   useEffect(() => {
     const welcomeMessage = {
       id: Date.now(),
-      text: `Hello! I'm ShieldSurround, ${parsedRiskAssessment}`,
+      text: `Hello! I'm ShieldSurround, \n\n${riskAssessment}`,
       sender: 'bot',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
@@ -120,10 +146,10 @@ const ChatInterface = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/pythonapis/followupQuery`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: inputMessage }),
+        body: JSON.stringify({ message: inputMessage,riskData: user.riskData }),
         credentials: 'include',
       });
 
@@ -132,7 +158,7 @@ const ChatInterface = () => {
 
       const botResponse = {
         id: Date.now() + 1,
-        text: data.response || "I'm sorry, I couldn't process your request at this time.",
+        text: data.answer || "I'm sorry, I couldn't process your request at this time.",
         sender: 'bot',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
@@ -292,7 +318,7 @@ const ChatInterface = () => {
                       </div>
                     ) : (
                       <>
-                        <p>{message.text}</p>
+                        <p><ReactMarkdown>{message.text}</ReactMarkdown>                        </p>
                         <span className="timestamp">{message.timestamp}</span>
                       </>
                     )}
