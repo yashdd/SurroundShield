@@ -17,7 +17,8 @@ router.route("/riskAssessment").post(async (req, res) => {
 router.route("/followupQuery").post(async (req, res) => {   
     try {
         const user = req.body;
-        const followupData = await followupQuery(user);
+        const riskData = req.session.riskData;
+        const followupData = await followupQuery(riskData, user.query);
         return res.status(200).json(followupData);
     } catch (e) {
         return res.status(500).json({ error: e });
