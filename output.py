@@ -4,6 +4,7 @@ app = Flask(__name__)
 from dotenv import load_dotenv
 import os
 from pathlib import Path
+
 # load_dotenv()
 
 env_path = Path('.') / '.env'
@@ -70,7 +71,7 @@ def get_risk_assessment(prompt, databricks_api_url, databricks_token):
     }
     payload = {
         "messages": [
-            {"role": "system", "content": "you are SurondShield AI-powered app that provides real-time, personalized risk alerts based on location and health data, helping users stay safe from weather changes, pollution, and natural disasters. Respond only on topics related to weather,weather alerts, environmental conditions, and crime safety in the community. If the query is not in this domain, say that you only handle community risk-related topics."},
+            {"role": "system", "content": "you are SurondShield AI-powered app that provides real-time, personalized risk alerts based on location and health data, helping users stay safe from weather changes , pollution, and natural disasters. and you can make use of ewmojis to make repsonse more interactive "},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": 500,
@@ -165,7 +166,7 @@ def risk_ass():
         f"- Cloud coverage (%): {clouds}\n\n"
         f"Weather Alerts: {'Present' if alert else 'None'}\n\n"
         f"Forecast Summary:\n{forecast_summary}\n\n"
-        f"Based on the above data, please provide recommendations and alerts if any significant risk also mention if user has good helahtt form given data "
+        f"Based on the above data, please provide recommendations and alerts if any significant risk also mention if user has good health form given data "
         f"is present for this individual. If there are no alerts or risks, simply say 'None'."
     )
         
@@ -243,7 +244,7 @@ def followup_query():
         f"- Cloud Cover: {extracted_data['clouds']}%\n"
         f"- Alerts: {extracted_data['weather_alerts']}\n\n"
         f"User Question: {extracted_data['user_query']}\n\n"
-        f"Please provide recommendations if applicable and only when needed dont bring it up everytime. and if you get empty query ask user to give something")     
+        f"Please provide recommendations if applicable and only when needed dont bring it up everytime. and if you get empty query or user ask somwething out of context things liek who's president of usa or what is 1+2 means anything that is not related to data we have ask user to give something, dont answer that")     
     
     followup_response = get_risk_assessment(followup_prompt, DATABRICKS_API_URL, DATABRICKS_TOKEN)
     if not followup_response:
