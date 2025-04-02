@@ -302,9 +302,6 @@ router.route("/updateLocation").post(async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
-export { router as userRoutes };
-=======
 router.route("/sendUserData/:id").get(async (req, res) => {
     try {
         const user = await getUser(req.params.id);
@@ -321,4 +318,3 @@ router.route("/sendUserData/:id").get(async (req, res) => {
 });
 
 export { router as userRoutes };
->>>>>>> 4f115e4 (sendDataToApi)
