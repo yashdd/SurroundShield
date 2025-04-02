@@ -4,6 +4,7 @@ app = Flask(__name__)
 from dotenv import load_dotenv
 import os
 from pathlib import Path
+
 # load_dotenv()
 
 env_path = Path('.') / '.env'
