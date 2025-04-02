@@ -327,8 +327,8 @@ const Login = () => {
     <div className="login-container">
       <div className="login-content">
         <div className="login-header">
-          <h2>ShieldSurround</h2>
-          <h1>Welcome Back</h1>
+          {/* <h2>ShieldSurround</h2> */}
+          <h1>Welcome Back 👋</h1>
           <p className="login-subtitle">Sign in to your account to continue</p>
         </div>
 

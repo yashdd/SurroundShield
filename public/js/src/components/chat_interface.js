@@ -41,11 +41,19 @@ const ChatInterface = () => {
   //     const windSpeed = sessionStorage.getItem('windSpeed') || "--";
 
   const [locationString, setLocationString] = useState("Location not found");
+ const [formData, setFormData] = useState({
+    location: '',
+    locationDetails: ''
+  });
+  const [locationInput, setLocationInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [error, setError] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   
   const storedUser = sessionStorage.getItem("session");
-const user = storedUser ? JSON.parse(storedUser).user : null;
-console.log((user))
+  const user = storedUser ? JSON.parse(storedUser).user : null;
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -222,7 +230,132 @@ console.log((user))
   const risk_data = JSON.parse(sessionStorage.getItem('riskdata')) || {};
   const parsedRiskAssessment = risk_data['risk_assessment']
   ;
+  const reverseGeocode = async (lat, lon) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+      );
+      const data = await response.json();
+      
+      if (data.address) {
+        const { city, state } = data.address;
+        const locationDetails = `${city || 'Unknown City'}, ${state || 'Unknown State'}`;
+        
+        setFormData(prev => ({
+          ...prev,
+          location: `${lat.toFixed(4)}, ${lon.toFixed(4)}`,
+          locationDetails
+        }));
+        setLocationInput(locationDetails);
+      }
+    } catch (err) {
+      console.error('Reverse geocoding error:', err);
+      setLocationInput('Location detected (address not available)');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Get user's current location using the browser's geolocation API
+  const getLocation = () => {
+    setLoading(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          await reverseGeocode(latitude, longitude);
+          console.log('Location detected:', latitude, longitude);
+          setLoading(false);
+        },
+        () => {
+          setError('Unable to fetch location. Please enable location services or enter manually.');
+          setLoading(false);
+        }
+      );
+    } else {
+      setError('Geolocation is not supported by this browser. Please enter manually.');
+      setLoading(false);
+    }
+  };
+
+  // Handle the search query to get location suggestions
+  const handleLocationSearch = async (query) => {
+    if (query.length < 3) {
+      setSuggestions([]);
+      return;
+    }
+  
+    setLoading(true); // Set loading to true when search begins
+  
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1`
+      );
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+  
+      const data = await response.json();
+  
+      console.log('Location search response:', data); // Log the response to debug
+  
+      if (Array.isArray(data)) {
+        setSuggestions(data.map(item => ({
+          displayName: item.display_name,
+          lat: item.lat,
+          lon: item.lon
+        })));
+      }
+    } catch (err) {
+      console.error('Location search error:', err);
+      setSuggestions([]);
+    } finally {
+      setLoading(false); // Set loading to false after the operation completes
+    }
+  };
+  
+  // Select a location from the suggestions
+  const handleSelectLocation = (suggestion) => {
+    setFormData(prev => ({
+      ...prev,
+      location: `${suggestion.lat}, ${suggestion.lon}`,
+      locationDetails: suggestion.displayName
+    }));
+    setLocationInput(suggestion.displayName);
+    setShowSuggestions(false);
+  };
+
+  // Update the location in the database (using PUT method)
+  const handleLocationUpdate = async () => {
+    if (!formData.location) {
+      alert('Please select a location');
+      return;
+    }
+
+    try {
+      const userId = JSON.parse(sessionStorage.getItem("session")).user.id;
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/updateLocation/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lat: formData.location.split(',')[0],
+          lon: formData.location.split(',')[1],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update location');
+      }
+
+      const updatedData = await response.json();
+      alert('Location updated successfully!');
+      window.location.reload(); // Refresh the page to reflect the changes
+    } catch (error) {
+      console.error('Error updating location:', error);
+      alert('Failed to update location.');
+    }
+  }
 
   return (
     <div className={`app-container ${isDarkMode ? 'dark-theme' : ''}`}>
@@ -284,13 +417,51 @@ console.log((user))
                 ))}
               </div>
             </div>
+            <div className="location-updater">
+      <input
+        type="text"
+        value={locationInput}
+        onChange={(e) => {
+          setLocationInput(e.target.value);
+          handleLocationSearch(e.target.value); // Trigger search on input change
+        }}
+        placeholder="Search for location"
+      />
+      {loading && <p>Loading suggestions...</p>}
+      {error && <p className="error">{error}</p>}
+
+      <ul className="location-suggestions">
+        {showSuggestions &&
+          suggestions.length > 0 &&
+          suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              onClick={() => handleSelectLocation(suggestion)} // Select location on click
+            >
+              {suggestion.displayName}
+            </li>
+          ))}
+      </ul>
+
+      <button
+        onClick={handleLocationUpdate}
+        disabled={!formData.location}
+        className="update-location-btn"
+      >
+        Update Location
+      </button>
+
+      <button onClick={getLocation} disabled={loading} className="detect-location-btn">
+        Detect My Location
+      </button>
+    </div>
           </div>
         </div>
 
         {/* Chat container */}
         <div className="chat-container">
           <div className="chat-header">
-            <h2>Shield Surround</h2>
+            <h2>Hi, {user.name}!</h2>
             <div className="header-controls">
               <button className="theme-toggle" onClick={toggleTheme} aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} theme`}>
                 {isDarkMode ? '☀️' : '🌙'}
@@ -318,7 +489,8 @@ console.log((user))
                       </div>
                     ) : (
                       <>
-                        <p><ReactMarkdown>{message.text}</ReactMarkdown>                        </p>
+                        <p><ReactMarkdown>{message.text}</ReactMarkdown>               </p>
+                        <p>Scroll below on the left panel to Update Location</p>
                         <span className="timestamp">{message.timestamp}</span>
                       </>
                     )}
