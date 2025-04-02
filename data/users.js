@@ -46,7 +46,7 @@ export const updateUser = async (id, name, age, height, weight, bmi, lat, lon) =
 export const updateLocation = async (id, lat, lon) => {
     try {
         const userCollection = await users();
-        const user = await userCollection.updateOne({ _id: new ObjectId(id) }, { $set: { lat, lon } });
+        const user = await userCollection.updateOne({ _id: new ObjectId(id) }, { $set: { name, age, height, weight, bmi, location } });
         return user;
     } catch (e) {
         throw e;
