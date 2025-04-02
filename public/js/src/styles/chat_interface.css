@@ -571,3 +571,60 @@
 .dark-theme .forecast-scroll {
   scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
+.location-updater {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+input[type="text"] {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.location-suggestions {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: #fff;
+}
+
+.location-suggestions li {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+}
+
+.location-suggestions li:hover {
+  background-color: #f1f1f1;
+}
+
+.update-location-btn, .detect-location-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.update-location-btn:disabled, .detect-location-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}
