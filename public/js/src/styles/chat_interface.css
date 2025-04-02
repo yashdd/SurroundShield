@@ -4,9 +4,8 @@
   width: 100%;
   min-height: 100vh;
   background-color: #ffffff;
-  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif; /* Updated font-family */
   padding-top: 60px; /* Space for navbar */
-
 }
 
 /* Main content area with side-by-side layout */
@@ -19,10 +18,10 @@
 
 /* Weather sidebar with fixed width and full height */
 .weather-sidebar {
-  width: 280px;
-  background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+  width: 300px; /* Slightly wider for comfort */
+  background: linear-gradient(165deg, #0f172a 0%, #1e293b 100%);
   color: white;
-  padding: 16px;
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -31,7 +30,9 @@
   left: 0;
   z-index: 10;
   overflow-y: auto;
-  padding-left: 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 }
 
 .weather-sidebar::-webkit-scrollbar {
@@ -43,7 +44,7 @@
 }
 
 .weather-sidebar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
 }
 
@@ -51,13 +52,23 @@
 .weather-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   padding-bottom: 20px;
 }
 
 /* Location section */
 .weather-location {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.weather-location:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .weather-location h3 {
@@ -65,60 +76,107 @@
   font-size: 1.2rem;
   font-weight: 600;
   color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.weather-location h3::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #60a5fa;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'%3E%3C/path%3E%3Ccircle cx='12' cy='10' r='3'%3E%3C/circle%3E%3C/svg%3E");
+  mask-size: cover;
 }
 
 .weather-location p {
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   font-size: 0.8rem;
   opacity: 0.9;
   color: #e2e8f0;
 }
 
-/* Current weather section */
+/* Current weather section with glassmorphism style */
 .weather-current {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 16px;
   text-align: center;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.weather-current:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .weather-temp {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   font-weight: 700;
   margin: 0;
   line-height: 1;
   color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .weather-condition {
-  font-size: 0.9rem;
-  margin: 2px 0 0;
+  font-size: 1rem;
+  margin: 8px 0 0;
   color: #e2e8f0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-/* Weather metrics grid */
+.weather-condition::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: #60a5fa;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z'%3E%3C/path%3E%3C/svg%3E");
+  mask-size: cover;
+}
+
+/* Weather metrics grid with modern cards */
 .weather-metrics {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: 10px;
 }
 
 .weather-metric {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 12px;
   text-align: center;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.weather-metric:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .metric-icon {
   font-size: 1.1rem;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+  color: #60a5fa;
 }
 
 .metric-value {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   margin: 0;
   color: #ffffff;
@@ -127,29 +185,48 @@
 .metric-label {
   font-size: 0.7rem;
   opacity: 0.8;
-  margin: 1px 0 0;
+  margin: 4px 0 0;
   color: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Hourly forecast section */
+/* Hourly forecast section with carousel-style cards */
 .weather-forecast {
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .forecast-title {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   color: #e2e8f0;
+  padding-left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.forecast-title::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: #60a5fa;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973'%3E%3C/path%3E%3Cpath d='m13 12-3 5h4l-3 5'%3E%3C/path%3E%3C/svg%3E");
+  mask-size: cover;
 }
 
 .forecast-scroll {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   overflow-x: auto;
-  padding: 8px 0;
+  padding: 8px 4px;
+  margin: 0 -4px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .forecast-scroll::-webkit-scrollbar {
@@ -161,37 +238,46 @@
 }
 
 .forecast-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
 }
 
 .forecast-item {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 8px;
-  min-width: 60px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px;
+  min-width: 70px;
   text-align: center;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.forecast-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .forecast-time {
   font-size: 0.7rem;
   opacity: 0.8;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   color: #e2e8f0;
 }
 
 .forecast-temp {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  margin: 0;
+  margin: 4px 0;
   color: #ffffff;
 }
 
 .forecast-condition {
-  font-size: 0.9rem;
-  margin: 1px 0 0;
+  font-size: 1rem;
+  margin: 4px 0 0;
+  color: #60a5fa;
 }
 
 /* Chat container */
@@ -201,17 +287,20 @@
   flex-direction: column;
   background-color: #ffffff;
   height: calc(100vh - 60px);
-  width: calc(100% - 280px);
+  width: calc(100% - 300px);
   position: fixed;
   top: 60px;
-  left: 280px;
+  left: 300px;
   z-index: 5;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
-/* Chat header */
+/* Chat header with modern design */
 .chat-header {
-  padding: 12px 20px;
-  background-color: #f0f2f5;
+  padding: 16px 24px;
+  background-color: rgba(240, 242, 245, 0.8);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid #e0e4e8;
   display: flex;
   justify-content: space-between;
@@ -219,44 +308,47 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  transition: all 0.2s ease;
 }
 
 .chat-header h2 {
   margin: 0;
   color: #2c3e50;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 .chat-header h2::before {
   content: '';
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background-color: #0f6cbd;
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E");
   mask-size: cover;
-  margin-right: 6px;
 }
 
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-/* Status indicator */
+/* Status indicator with pulse animation */
 .status-indicator {
   color: #16a34a;
   font-size: 0.85rem;
   font-weight: 500;
   display: flex;
   align-items: center;
-  padding: 4px 10px;
+  padding: 6px 12px;
   background-color: rgba(22, 163, 74, 0.1);
-  border-radius: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(22, 163, 74, 0.2);
+  transition: all 0.2s ease;
 }
 
 .status-indicator::before {
@@ -266,50 +358,67 @@
   height: 8px;
   border-radius: 50%;
   background-color: #16a34a;
-  margin-right: 6px;
+  margin-right: 8px;
   animation: pulse 2s infinite;
+  box-shadow: 0 0 0 rgba(22, 163, 74, 0.4);
 }
 
 .status-indicator.typing::before {
   background-color: #f59e0b;
+  box-shadow: 0 0 0 rgba(245, 158, 11, 0.4);
 }
 
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(22, 163, 74, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+  }
 }
 
-/* Theme toggle button */
+/* Theme toggle button with improved hover effect */
 .theme-toggle {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
-  padding: 4px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
+  padding: 0;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  color: #4b5563;
 }
 
 .theme-toggle:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+  color: #0f6cbd;
 }
 
-/* Messages container */
+/* Messages container with smooth scrolling */
 .messages-container {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   background-color: #f9fafb;
+  background-image: 
+    radial-gradient(at 20% 30%, rgba(219, 234, 254, 0.3) 0px, transparent 50%),
+    radial-gradient(at 80% 70%, rgba(219, 234, 254, 0.3) 0px, transparent 50%);
   scrollbar-width: thin;
   scrollbar-color: #d1d5db #f9fafb;
-  height: calc(100% - 120px);
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .messages-container::-webkit-scrollbar {
@@ -317,7 +426,7 @@
 }
 
 .messages-container::-webkit-scrollbar-track {
-  background: #f9fafb;
+  background: transparent;
 }
 
 .messages-container::-webkit-scrollbar-thumb {
@@ -325,18 +434,46 @@
   border-radius: 6px;
 }
 
-/* Empty chat message */
+/* Empty chat message with illustration */
 .empty-chat-message {
   text-align: center;
   color: #6b7280;
-  margin-top: 40px;
-  font-size: 0.95rem;
+  margin: 60px auto;
+  max-width: 400px;
+  padding: 24px;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
 }
 
-/* Message bubbles */
+.empty-chat-message::before {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background-color: #0f6cbd;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'%3E%3C/path%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  opacity: 0.8;
+}
+
+/* Message bubbles with enhanced styling */
 .message {
   display: flex;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: fade-in 0.3s forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .user-message {
@@ -349,48 +486,94 @@
 
 .message-content {
   max-width: 65%;
-  padding: 14px 18px;
-  border-radius: 16px;
+  padding: 16px 20px;
   position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
 }
 
+.message-content:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Enhanced chat bubble styling */
 .user-message .message-content {
   background: linear-gradient(135deg, #0f6cbd 0%, #0078d4 100%);
-  color: white;
+  color: #ffffff;
+  border: 1px solid rgba(15, 108, 189, 0.5);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-bottom-left-radius: 18px;
   border-bottom-right-radius: 4px;
 }
 
 .bot-message .message-content {
   background-color: #ffffff;
   color: #1e293b;
-  border-bottom-left-radius: 4px;
   border: 1px solid #e5e7eb;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
+  border-bottom-left-radius: 4px;
 }
 
+/* Message content hover effect */
+.user-message .message-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, transparent 50%, #0078d4 50%);
+  border-bottom-right-radius: 4px;
+}
+
+.bot-message .message-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(225deg, transparent 50%, #ffffff 50%);
+  border-bottom-left-radius: 4px;
+}
+
+/* Timestamp with improved styling */
 .timestamp {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   opacity: 0.7;
   margin-top: 6px;
   text-align: right;
+  font-weight: 500;
 }
 
-/* Typing indicator */
+/* Typing indicator with smooth animation */
 .typing-indicator {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 8px 0;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  width: fit-content;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
 }
 
 .typing-indicator span {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #d1d5db;
+  background-color: #0f6cbd;
   animation: typing-bounce 1.4s infinite ease-in-out;
+  opacity: 0.7;
 }
 
 .typing-indicator span:nth-child(1) {
@@ -410,53 +593,81 @@
     transform: translateY(0);
   }
   30% {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
   }
 }
 
-/* Input container */
+/* Input container with floating design */
 .input-container {
-  padding: 16px 20px;
+  padding: 20px 24px;
   border-top: 1px solid #e0e4e8;
   display: flex;
-  gap: 10px;
-  background-color: #ffffff;
+  gap: 12px;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
   position: sticky;
   bottom: 0;
   z-index: 10;
+  transition: all 0.3s ease;
 }
 
 .input-container input {
   flex: 1;
-  padding: 14px 16px;
+  padding: 16px 20px;
   border: 1px solid #d1d5db;
-  border-radius: 24px;
+  border-radius: 28px;
   font-size: 0.95rem;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
 }
 
 .input-container input:focus {
   outline: none;
   border-color: #0f6cbd;
-  box-shadow: 0 0 0 3px rgba(15, 108, 189, 0.15);
+  box-shadow: 0 0 0 3px rgba(15, 108, 189, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.input-container input::placeholder {
+  color: #9ca3af;
 }
 
 .input-container button {
-  padding: 12px 24px;
+  padding: 14px 28px;
   background: linear-gradient(135deg, #0f6cbd 0%, #0078d4 100%);
   color: white;
   border: none;
-  border-radius: 24px;
+  border-radius: 28px;
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(15, 108, 189, 0.2);
+}
+
+.input-container button::after {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #ffffff;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='22' y1='2' x2='11' y2='13'%3E%3C/line%3E%3Cpolygon points='22 2 15 22 11 13 2 9 22 2'%3E%3C/polygon%3E%3C/svg%3E");
+  mask-size: cover;
 }
 
 .input-container button:hover {
   background: linear-gradient(135deg, #0c5da5 0%, #006dc1 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(15, 108, 189, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15, 108, 189, 0.25);
+}
+
+.input-container button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(15, 108, 189, 0.15);
 }
 
 .input-container button:disabled {
@@ -466,108 +677,110 @@
   box-shadow: none;
 }
 
-/* Dark theme adjustments */
-.dark-theme {
-  color: #e5e7eb;
+/* Location updater with improved styling */
+.location-updater {
+  padding: 24px;
+  max-width: 400px;
+  margin: 12px auto;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 }
 
-.dark-theme .app-container {
-  background-color: #111827;
+.location-updater:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
-.dark-theme .weather-sidebar {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+input[type="text"] {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.dark-theme .weather-current,
-.dark-theme .weather-metric,
-.dark-theme .forecast-item {
-  background: rgba(255, 255, 255, 0.05);
+input[type="text"]:focus {
+  outline: none;
+  border-color: #0f6cbd;
+  box-shadow: 0 0 0 3px rgba(15, 108, 189, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.dark-theme .chat-container {
-  background-color: #111827;
+.location-suggestions {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
 }
 
-.dark-theme .chat-header {
-  background-color: #1e2634;
-  border-bottom-color: #2d3748;
+.location-suggestions li {
+  padding: 12px 16px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
-.dark-theme .chat-header h2 {
-  color: #ffffff;
+.location-suggestions li:last-child {
+  border-bottom: none;
 }
 
-.dark-theme .chat-header h2::before {
-  background-color: #60a5fa;
+.location-suggestions li::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  background-color: #0f6cbd;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'%3E%3C/path%3E%3Ccircle cx='12' cy='10' r='3'%3E%3C/circle%3E%3C/svg%3E");
+  mask-size: cover;
+  opacity: 0.7;
 }
 
-.dark-theme .theme-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.location-suggestions li:hover {
+  background-color: #f0f9ff;
+  padding-left: 20px;
 }
 
-.dark-theme .messages-container {
-  background-color: #111827;
-  scrollbar-color: #4b5563 #111827;
+.update-location-btn, .detect-location-btn {
+  margin-top: 16px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0f6cbd 0%, #0078d4 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(15, 108, 189, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
 }
 
-.dark-theme .messages-container::-webkit-scrollbar-track {
-  background: #111827;
+.update-location-btn::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #ffffff;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z'%3E%3C/path%3E%3Cpolyline points='17 21 17 13 7 13 7 21'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
-.dark-theme .messages-container::-webkit-scrollbar-thumb {
-  background-color: #4b5563;
-}
-
-.dark-theme .empty-chat-message {
-  color: #9ca3af;
-}
-
-.dark-theme .bot-message .message-content {
-  background-color: #1e2634;
-  color: #e5e7eb;
-  border-color: #374151;
-}
-
-.dark-theme .user-message .message-content {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-}
-
-.dark-theme .typing-indicator span {
-  background-color: #6b7280;
-}
-
-.dark-theme .input-container {
-  background-color: #1e2634;
-  border-top-color: #2d3748;
-}
-
-.dark-theme .input-container input {
-  background-color: #111827;
-  border-color: #374151;
-  color: #e5e7eb;
-}
-
-.dark-theme .input-container input::placeholder {
-  color: #6b7280;
-}
-
-.dark-theme .input-container button {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-}
-
-.dark-theme .input-container button:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-}
-
-.dark-theme .input-container button:disabled {
-  background: #4b5563;
-}
-
-.dark-theme .status-indicator {
-  background-color: rgba(22, 163, 74, 0.2);
-}
-
-.dark-theme .forecast-scroll {
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}

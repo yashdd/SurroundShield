@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import logo from '../assets/images/logo.svg';
 import { 
   Home, 
   LogIn, 
@@ -18,7 +19,7 @@ const Navbar = () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/logout`, {
         method: 'GET', // You can also use POST if needed
-        credentials: 'include', // Ensures the session or cookies are sent
+        credentials: 'include', 
       });
 
       const data = await response.json();
@@ -48,8 +49,13 @@ const Navbar = () => {
   return (
     <nav className="horizontal-navbar">
       <div className="nav-brand">
-        <Shield className="logo-icon" />
-        <span className="logo-text">ShieldSurround
+        {/* <Shield className="logo-icon"><img src={logo} alt="Logo" /></Shield> */}
+        {/* <div className="logo-icon">
+          <img src={logo} alt="Logo" width={10px} />
+        </div> */}
+        <span className="logo-icon"></span>
+
+        <span className="logo-text"> <img src={logo} alt="Logo" />ShieldSurround
         </span>
       </div>
 

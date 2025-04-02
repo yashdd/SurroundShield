@@ -461,7 +461,7 @@ const ChatInterface = () => {
         {/* Chat container */}
         <div className="chat-container">
           <div className="chat-header">
-            <h2>Shield Surround</h2>
+            <h2>Hi, {user.name}!</h2>
             <div className="header-controls">
               <button className="theme-toggle" onClick={toggleTheme} aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} theme`}>
                 {isDarkMode ? '☀️' : '🌙'}
@@ -489,7 +489,8 @@ const ChatInterface = () => {
                       </div>
                     ) : (
                       <>
-                        <p><ReactMarkdown>{message.text}</ReactMarkdown>                        </p>
+                        <p><ReactMarkdown>{message.text}</ReactMarkdown>               </p>
+                        <p>Scroll below on the left panel to Update Location</p>
                         <span className="timestamp">{message.timestamp}</span>
                       </>
                     )}

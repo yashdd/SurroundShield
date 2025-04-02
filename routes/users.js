@@ -7,7 +7,6 @@ import { riskAssessment } from "../data/pythonapis.js";
 import { users } from "../config/mongoCollections.js";
 import axios from "axios";
 import jwt from "jsonwebtoken";
-import axios from "axios";
 
 
 const router = express.Router();
