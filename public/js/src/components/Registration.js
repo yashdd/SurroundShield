@@ -176,7 +176,7 @@ const RegistrationPage = () => {
   
       if (response.ok) {
         setSubmitted(true);
-        navigate('/login');
+        navigate('/Login');
       } else {
         setError(data.error || 'Something went wrong. Please try again.');
       }

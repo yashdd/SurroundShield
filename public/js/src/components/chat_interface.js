@@ -319,7 +319,7 @@ console.log((user))
                     ) : (
                       <>
                         <p><ReactMarkdown>{message.text}</ReactMarkdown>                        </p>
-                        <span className="timestamp">{message.timestamp}</span>
+                        {/* <span className="timestamp">{message.timestamp}</span> */}
                       </>
                     )}
                   </div>
