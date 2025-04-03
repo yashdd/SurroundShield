@@ -490,7 +490,6 @@ const ChatInterface = () => {
                     ) : (
                       <>
                         <p><ReactMarkdown>{message.text}</ReactMarkdown>               </p>
-                        <p>Scroll below on the left panel to Update Location</p>
                         <span className="timestamp">{message.timestamp}</span>
                       </>
                     )}
