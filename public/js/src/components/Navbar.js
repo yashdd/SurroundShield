@@ -55,7 +55,7 @@ const Navbar = () => {
         </div> */}
         <span className="logo-icon"></span>
 
-        <span className="logo-text"> <img src={logo} alt="Logo" />ShieldSurround
+        <span className="logo-text"> <img src={logo} alt="Logo" />SurroundShield
         </span>
       </div>
 
