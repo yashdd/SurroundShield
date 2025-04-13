@@ -1,241 +1,103 @@
-# SurroundShield: Your Personal Health Guardian 🛡️
+# 🌍 SurroundShield – Your AI-Powered Environmental Risk Assistant
 
-## The Story Behind SurroundShield
+**SurroundShield** is an advanced AI-powered chatbot that offers **real-time, personalized safety insights** based on a user's **location, weather conditions, and health profile (BMI)**. Designed with a sleek UI and powered by cutting-edge AI models, it acts as a digital guardian—helping users stay ahead of environmental hazards, community risks, and natural disasters.
 
-In a world where health and wellness have become paramount, SurroundShield emerges as your personal health guardian. This innovative web application combines the power of modern web technologies with advanced AI capabilities to help you track, understand, and improve your health metrics in a user-friendly way.
-
-### What Makes SurroundShield Special?
-
-SurroundShield is more than just another health tracking app. It's your personal health companion that:
-
--   📊 Tracks your vital health metrics (BMI, weight, height)
--   📍 Monitors your location-based health data
--   🔒 Securely stores your personal health information
--   📱 Provides a beautiful, intuitive interface
--   🤝 Connects you with your health journey
--   🤖 Leverages AI for personalized health insights
--   🔄 Real-time health monitoring and alerts
-
-## System Architecture 🏗️
-
-SurroundShield is built with a modern, full-stack architecture:
-
-### Frontend
-
--   React.js for dynamic user interface
--   Modern CSS with responsive design
--   Real-time data updates
-
-### Backend
-
--   Node.js/Express.js for user management
--   Python Flask for AI/ML services
--   MongoDB for data storage
--   Databricks Playground for LLM integration
-
-## Getting Started 🚀
-
-### Prerequisites
-
-Before you begin your health journey with SurroundShield, make sure you have:
-
--   Node.js (v14 or higher)
--   Python 3.8 or higher
--   MongoDB (for data storage)
--   npm (Node Package Manager)
--   pip (Python Package Manager)
--   Databricks account (for LLM features)
-
-### Installation Steps
-
-1. **Clone the Repository**
-
-    ```bash
-    git clone https://github.com/yourusername/SurroundShield.git
-    cd SurroundShield
-    ```
-
-2. **Install Node.js Dependencies**
-
-    ```bash
-    npm install
-    ```
-
-3. **Install Python Dependencies**
-
-    ```bash
-    cd python_backend
-    pip install -r requirements.txt
-    ```
-
-4. **Set Up Environment Variables**
-   Create a `.env` file in the root directory with:
-
-    ```
-    # Node.js Backend
-    MONGODB_URI=your_mongodb_connection_string
-    JWT_SECRET=your_jwt_secret
-    PORT=3000
-
-    # Python Flask Backend
-    FLASK_APP=app.py
-    FLASK_ENV=development
-    DATABRICKS_TOKEN=your_databricks_token
-    DATABRICKS_URL=your_databricks_workspace_url
-    ```
-
-5. **Start the Servers**
-
-    ```bash
-    # Terminal 1 - Start Node.js server
-    npm start
-
-    # Terminal 2 - Start Flask server
-    cd python_backend
-    flask run
-    ```
-
-6. **Access the Application**
-   Open your browser and navigate to:
-    ```
-    http://localhost:3000
-    ```
-
-## Features 🌟
-
-### User Management
-
--   Secure user registration and login
--   JWT-based authentication
--   Password hashing for security
-
-### Health Tracking
-
--   BMI calculation
--   Weight and height tracking
--   Location-based health data
--   Age-specific health metrics
-
-### AI-Powered Features
-
--   Personalized health insights using LLAMA 3.1 70B model
--   Advanced health risk assessment with large language model capabilities
--   Smart recommendations based on comprehensive health data analysis
--   Natural language health queries with state-of-the-art language understanding
--   Context-aware health monitoring and alerts
-
-### User Interface
-
--   Clean, modern design
--   Responsive layout
--   Intuitive navigation
--   Real-time data updates
-
-## Project Structure 📁
-
-```
-SurroundShield/
-├── config/
-│   ├── mongoCollections.js
-│   └── settings.js
-├── data/
-│   └── users.js
-├── public/
-│   └── js/
-│       └── src/
-│           ├── components/
-│           │   ├── login.js
-│           │   └── Registration.js
-│           ├── styles/
-│           │   └── styles.css
-│           └── App.js
-├── python_backend/
-│   ├── app.py
-│   ├── requirements.txt
-│   ├── models/
-│   │   └── llm_model.py
-│   └── utils/
-│       └── databricks_utils.py
-├── routes/
-│   ├── index.js
-│   └── users.js
-├── views/
-├── .env
-├── .gitignore
-├── app.js
-└── package.json
-```
-
-## API Endpoints 🔌
-
-### User Routes (Node.js)
-
--   `POST /users` - Register a new user
--   `POST /users/login` - User login
--   `GET /users/:id` - Get user profile
--   `PUT /users/:id` - Update user profile
--   `DELETE /users/:id` - Delete user account
-
-### AI Routes (Flask)
-
--   `POST /api/health-insights` - Get personalized health insights
--   `POST /api/risk-assessment` - Get health risk assessment
--   `POST /api/recommendations` - Get personalized recommendations
--   `POST /api/health-query` - Natural language health queries
-
-## Databricks Integration 🔗
-
-Our LLM integration is powered by Databricks Playground, featuring the LLAMA 3.1 70B parameter model, providing:
-
--   Advanced natural language processing with 70 billion parameters
--   State-of-the-art health insights and analysis
--   Deep understanding of medical and health-related queries
--   Contextual health recommendations
--   Real-time health monitoring with advanced pattern recognition
--   Risk assessment with comprehensive data analysis
--   Multi-modal health data interpretation
-
-### LLM Model Specifications
-
--   **Model**: LLAMA 3.1 70B
--   **Parameters**: 70 billion
--   **Integration**: Databricks Playground
--   **Capabilities**:
-    -   Natural language understanding
-    -   Health data analysis
-    -   Risk assessment
-    -   Personalized recommendations
-    -   Medical context awareness
-    -   Real-time health monitoring
-
-## Security 🔒
-
-SurroundShield takes security seriously:
-
--   All passwords are hashed using bcrypt
--   JWT tokens for authentication
--   Secure MongoDB connection
--   Environment variable protection
--   Secure API endpoints
--   Data encryption
-
-## Future Roadmap 🗺️
-
-We're constantly improving SurroundShield. Here's what's coming:
-
--   [ ] Mobile app version
--   [ ] Health goal setting
--   [ ] Progress visualization
--   [ ] Community features
--   [ ] Integration with health devices
--   [ ] Advanced AI features
--   [ ] Real-time health monitoring
--   [ ] Integration with wearable devices
-
-## License 📄
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Built for **Chubb**’s innovation challenge, SurroundShield combines multi-source data, robust backend services, and a fine-tuned LLM (LLaMA 3.3 - 70B) to deliver **immediate, actionable, and context-aware guidance**.
 
 ---
 
-Made with ❤️ by the SurroundShield Team
+## 🧠 Key Features
+
+- 📍 **Location-Aware Risk Detection**  
+  Detects nearby environmental and community hazards based on geolocation
+
+- 🌤️ **Weather & Environmental Analysis**  
+  Assesses real-time weather, pollution, UV levels, and natural disaster alerts
+
+- 💪 **Health-Profile Awareness**  
+  Integrates user BMI to personalize safety advice
+
+- 💬 **AI Chatbot Assistant**  
+  Fine-tuned LLaMA 3.3 (70B) model guiding users with risk responses and safety tips
+
+- 🧾 **Prompted for Chubb Use Case**  
+  Tailored to Chubb’s mission of proactive personal protection
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer        | Technology                          |
+|-------------|--------------------------------------|
+| Frontend     | React.js, Bootstrap, HTML/CSS       |
+| Backend      | Node.js, Express.js                 |
+| AI/ML        | Flask API, Databricks, LLaMA 3.3 (70B) |
+| Database     | MongoDB                             |
+| Hosting/Infra| Databricks, Render/AWS              |
+
+---
+
+## 📸 UI Preview
+
+> **Clean, modern, responsive UI** – optimized for desktop and mobile devices  
+> *(Screenshots coming soon)*
+
+---
+
+## 🧪 How It Works
+
+1. **User Input**: User enters their location and BMI  
+2. **Real-Time Data Fetch**: System pulls current weather, pollution, disaster alerts  
+3. **Risk Assessment**: Data is sent to Flask AI backend where the fine-tuned LLaMA 3.3 LLM evaluates the threat level  
+4. **Chatbot Response**: The AI chatbot provides personalized advice or safety warnings
+
+---
+
+## 📂 Project Structure
+
+SurroundShield/ ├── client/ # React Frontend (Bootstrap styled) ├── server/ # Node.js Express API ├── ai-model/ # Flask server for AI prompt handling ├── databricks/ # Notebook for LLaMA fine-tuning ├── models/ # MongoDB Schemas ├── public/ # Static files ├── .env.example # Sample env variables ├── README.md
+
+
+---
+
+---
+
+## ⚙️ Getting Started
+
+### 🔧 Prerequisites
+
+- Node.js & npm
+- Python 3.10+
+- MongoDB (local/cloud)
+- Databricks Workspace
+- API Keys for Weather/Pollution
+
+### 🛠️ Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/yashdd/SurroundShield.git
+cd SurroundShield
+
+# Setup frontend
+cd client
+npm install
+npm start
+
+# Setup backend
+cd ../server
+npm install
+npm run dev
+
+# Start Flask AI service
+cd ../ai-model
+pip install -r requirements.txt
+python app.py
+
+
+# Fork the repo
+# Create your feature branch (git checkout -b feature/AmazingFeature)
+# Commit your changes (git commit -m 'Add amazing feature')
+# Push to the branch (git push origin feature/AmazingFeature)
+# Open a Pull Request
+
