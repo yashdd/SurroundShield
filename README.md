@@ -21,7 +21,7 @@ Built for **Chubb**’s innovation challenge, SurroundShield combines multi-sour
   Fine-tuned LLaMA 3.3 (70B) model guiding users with risk responses and safety tips
 
 - 🧾 **Prompted for Chubb Use Case**  
-  Tailored to Chubb’s mission of proactive personal protection
+  Tailored to Chubb’s mission of Harnessing AI for Community Risk Awareness Prompt
 
 ---
 
@@ -55,12 +55,40 @@ Built for **Chubb**’s innovation challenge, SurroundShield combines multi-sour
 
 ## 📂 Project Structure
 
-SurroundShield/ ├── client/ # React Frontend (Bootstrap styled) ├── server/ # Node.js Express API ├── ai-model/ # Flask server for AI prompt handling ├── databricks/ # Notebook for LLaMA fine-tuning ├── models/ # MongoDB Schemas ├── public/ # Static files ├── .env.example # Sample env variables ├── README.md
-
-
 ---
+├── config/
+│   ├── mongoCollections.js
+│   └── settings.js
+├── data/
+│   └── users.js
+├── public/
+│   └── js/
+│       └── src/
+│           ├── components/
+│           │   ├── login.js
+│           │   └── Registration.js
+│           ├── styles/
+│           │   └── styles.css
+│           └── App.js
+├── python_backend/
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── models/
+│   │   └── llm_model.py
+│   └── utils/
+│       └── databricks_utils.py
+├── routes/
+│   ├── index.js
+│   └── users.js
+├── views/
+├── .env
+├── .gitignore
+├── app.js
+└── package.json
 
----
+
+
+
 
 ## ⚙️ Getting Started
 
