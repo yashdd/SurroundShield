@@ -55,7 +55,6 @@ Built for **Chubb**’s innovation challenge, SurroundShield combines multi-sour
 
 ## 📂 Project Structure
 
----
 ├── config/
 │   ├── mongoCollections.js
 │   └── settings.js
@@ -89,6 +88,7 @@ Built for **Chubb**’s innovation challenge, SurroundShield combines multi-sour
 
 
 
+---
 
 ## ⚙️ Getting Started
 
