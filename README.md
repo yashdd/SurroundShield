@@ -33,62 +33,27 @@ Built for **Chubb**’s innovation challenge, SurroundShield combines multi-sour
 | Backend      | Node.js, Express.js                 |
 | AI/ML        | Flask API, Databricks, LLaMA 3.3 (70B) |
 | Database     | MongoDB                             |
-| Hosting/Infra| Databricks, Render/AWS              |
+| Hosting/Infra| Databricks                          |
 
 ---
 
 ## 📸 UI Preview
 
 > **Clean, modern, responsive UI** – optimized for desktop and mobile devices  
-> *(Screenshots coming soon)*
+> https://www.youtube.com/watch?v=prmbRBFXmvA (Checkout the Project Demo)
 
 ---
 
 ## 🧪 How It Works
 
-1. **User Input**: User enters their location and BMI  
+1. **User Input**: User enters their location and BMI while registering. Later he can ask queries to the Chatbot related to community awareness, surroundings, environmental disasters, etc  
 2. **Real-Time Data Fetch**: System pulls current weather, pollution, disaster alerts  
 3. **Risk Assessment**: Data is sent to Flask AI backend where the fine-tuned LLaMA 3.3 LLM evaluates the threat level  
 4. **Chatbot Response**: The AI chatbot provides personalized advice or safety warnings
 
 ---
 
-## 📂 Project Structure
 
-├── config/
-│   ├── mongoCollections.js
-│   └── settings.js
-├── data/
-│   └── users.js
-├── public/
-│   └── js/
-│       └── src/
-│           ├── components/
-│           │   ├── login.js
-│           │   └── Registration.js
-│           ├── styles/
-│           │   └── styles.css
-│           └── App.js
-├── python_backend/
-│   ├── app.py
-│   ├── requirements.txt
-│   ├── models/
-│   │   └── llm_model.py
-│   └── utils/
-│       └── databricks_utils.py
-├── routes/
-│   ├── index.js
-│   └── users.js
-├── views/
-├── .env
-├── .gitignore
-├── app.js
-└── package.json
-
-
-
-
----
 
 ## ⚙️ Getting Started
 
